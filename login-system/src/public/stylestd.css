@@ -1,0 +1,58 @@
+/* styles.css */
+
+.new-student-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.new-student-form h2 {
+    text-align: center;
+}
+
+.new-student-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.new-student-form .form-group {
+    margin-bottom: 15px;
+}
+
+.new-student-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.new-student-form input[type="text"],
+.new-student-form input[type="email"],
+.new-student-form input[type="date"],
+.new-student-form input[type="tel"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 16px;
+}
+
+.new-student-form .btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.new-student-form .btn i {
+    margin-right: 5px;
+}
+
+.new-student-form .btn:hover {
+    background-color: #0056b3;
+}

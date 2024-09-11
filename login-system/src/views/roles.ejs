@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Rol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Margarine', cursive;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: url('img/rol.avif'); /* Imagen de fondo */
+            background-size: cover;
+            background-position: center;
+            color: #fff; /* Color de texto en blanco para el contraste con el fondo oscuro */
+            text-align: center; /* Centra el texto */
+        }
+        .container {
+            position: relative;
+            z-index: 1; /* Asegura que el contenido esté sobre el fondo */
+        }
+        .back-link {
+            font-size: 18px;
+            color: #070707;
+            text-decoration: none;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            z-index: 2; /* Asegura que el enlace esté sobre el fondo */
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .back-icon {
+            margin-right: 5px;
+        }
+        .logo-container {
+            margin-bottom: 20px; /* Ajusta el espacio debajo del logo */
+        }
+        .logo {
+            width: 150px; /* Ajusta el tamaño del logo según sea necesario */
+            height: 150px; /* Ajusta la altura del logo según sea necesario */
+            object-fit: cover; /* Ajusta el logo para que se ajuste dentro del círculo */
+            border: 3px solid #ffffff; /* Borde blanco para destacar el logo */
+            margin-top: -50px; /* Subir la imagen */
+        }
+        h1 {
+            margin: 40px 0; /* Espacio superior e inferior del título */
+            color: #080808; /* Color del título */
+            font-size: 24px; /* Tamaño del título */
+        }
+        .roles-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Espacio entre los enlaces y la línea */
+            margin-top: 30px; /* Ajustar el margen superior del contenedor de roles */
+        }
+        .role-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .role-link {
+            font-size: 24px;
+            color: #fcf9f9;
+            text-decoration: none;
+            border: 2px solid #28a745; /* Color del borde */
+            border-radius: 5px;
+            padding: 10px 20px;
+            background-color: #28a745; /* Color de fondo verde */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .role-link:hover {
+            background-color: #218838; /* Color de fondo verde más oscuro en hover */
+            color: #0c0c0c;
+        }
+        .role-description {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #050505; /* Color del texto debajo de los roles */
+        }
+        .separator {
+            height: 180px; /* Altura de la línea */
+            width: 2px; /* Grosor de la línea */
+            background-color: #f5f7f8; /* Color de la línea */
+        }
+        .footer {
+            position: absolute;
+            bottom: 20px; /* Eleva la posición del footer */
+            text-align: center;
+            width: 100%;
+            color: #ffffff;
+            font-size: 14px;
+        }
+        @media (max-width: 1200px) {
+            .module {
+                flex: 1 1 calc(33.333% - 20px); /* 3 columnas para pantallas grandes */
+                max-width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 992px) {
+            .module {
+                flex: 1 1 calc(50% - 20px); /* 2 columnas para pantallas medianas */
+                max-width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .module {
+                flex: 1 1 100%; /* 1 columna para pantallas pequeñas */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/home" class="back-link">
+        <i class="fas fa-arrow-left back-icon"></i> Regresar
+    </a>
+    <div class="container">
+        <div class="logo-container">
+            <img src="img/home.jpg" alt="Logo" class="logo"> 
+        </div>
+        <h1>Seleccione tipo de usuario</h1>
+        <div class="roles-container">
+            <div class="role-box">
+                <a href="/login" class="role-link">
+                    <i class="fas fa-user-tie"></i> Administrador
+                </a>
+                <p class="role-description">Servicio para administradores de CECEC</p>
+            </div>
+            <div class="separator"></div>
+            <div class="role-box">
+                <a href="/login-profesor" class="role-link">
+                    <i class="fas fa-chalkboard-teacher"></i> Catedráticos
+                </a>
+                <p class="role-description">Servicio para catedráticos de CECEC</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        © 2024 ING. Frida Berlinda Garcia 
+    </div>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

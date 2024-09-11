@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Margarine', cursive;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #28a745; /* Verde suave */
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header img {
+            height: 50px; /* Ajusta la altura del logo según tus necesidades */
+            margin-left: 20px;
+        }
+        header h1 {
+            text-align: center;
+            margin: 0 auto;
+            flex: 1;
+        }
+        nav {
+            margin-right: 20px; /* Margen derecho para el menú de navegación */
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form label {
+            font-weight: bold;
+        }
+        form input, form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        form button {
+            background-color: #28a745; /* Verde suave */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #218838; /* Verde más oscuro */
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        footer p {
+            margin: 0;
+        }
+        @media (max-width: 1200px) {
+            .module {
+                flex: 1 1 calc(33.333% - 20px); /* 3 columnas para pantallas grandes */
+                max-width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 992px) {
+            .module {
+                flex: 1 1 calc(50% - 20px); /* 2 columnas para pantallas medianas */
+                max-width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .module {
+                flex: 1 1 100%; /* 1 columna para pantallas pequeñas */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/img/home.jpg" alt="Logo de la Escuela"> <!-- Logo de la escuela -->
+        <h1>Contacto</h1>
+        <nav>
+            <a href="/home"><i class="fas fa-home"></i> Inicio</a>
+            <a href="/page"><i class="fas fa-briefcase"></i> Servicios</a>
+            <a href="/sobre"><i class="fas fa-history"></i> Nuestra Historia</a>
+            <a href="/album"><i class="fas fa-images"></i> Álbum de Fotos</a>
+            <a href="/contacto"><i class="fas fa-envelope"></i> Contacto</a>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Envíanos un Mensaje</h2>
+            <form action="/send-email" method="post">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="telefono" name="telefono" required>
+                
+                <label for="mensaje">Mensaje:</label>
+                <textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+                
+                <button type="submit">Enviar</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 ING. Frida Berlinda Garcia</p>
+    </footer>
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

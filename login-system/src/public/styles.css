@@ -1,0 +1,115 @@
+/* public/css/styles.css */
+
+/* Estilos generales para el cuerpo y el fondo */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0; /* Color de fondo de la página */
+    background-image: url('../img/fondo.jpg'); /* Ruta a tu imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    height: 100vh; /* Ajuste para cubrir toda la altura */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Estilos para el contenedor del logo */
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px; /* Espacio entre el logo y el título */
+  }
+  
+  /* Estilos para la imagen del logo */
+  .logo-container img {
+    width: 50px; /* Ancho deseado para la imagen */
+    height: 50px; /* Altura deseada para la imagen */
+    object-fit: contain; /* Ajustar la imagen dentro del tamaño especificado */
+  }
+  
+  /* Contenedor principal de los formularios */
+  .form-container {
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+    padding: 20px;
+    max-width: 300px; /* Ancho máximo del formulario */
+    border-radius: 10px;
+    border: 1px dashed #ccc; /* Líneas punteadas */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  }
+  
+  /* Formulario dentro del contenedor */
+  .form-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Estilos para los campos de entrada y botones */
+  .form-container input[type="text"],
+  .form-container input[type="password"],
+  .form-container button {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+/* Estilos para el selector de rol */
+.form-container select {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  appearance: none; /* Ocultar el estilo nativo del selector en algunos navegadores */
+  background: white url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>') no-repeat right 10px center; /* Icono de flecha hacia abajo a la derecha */
+  background-size: 18px; /* Tamaño del icono */
+}
+
+/* Estilos específicos para el selector de rol en hover */
+.form-container select:hover {
+  border-color: #007bff; /* Cambiar color del borde al hacer hover */
+}
+
+/* Estilos específicos para el selector de rol en foco */
+.form-container select:focus {
+  outline: none; /* Eliminar el contorno al hacer foco */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Sombra suave al hacer foco */
+}
+
+
+  .form-container button {
+    background-color: #007bff; /* Color de fondo del botón */
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Estilos específicos para el botón en hover */
+  .form-container button:hover {
+    background-color: #0056b3; /* Color de fondo del botón en hover */
+  }
+  
+  /* Estilos para el enlace de recuperar contraseña */
+  .form-container a {
+    text-align: center;
+    margin-top: 10px;
+    color: #007bff; /* Color del enlace */
+    text-decoration: none;
+  }
+  
+  /* Estilos específicos para el enlace de recuperar contraseña en hover */
+  .form-container a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Media queries para hacerlo responsive */
+  @media screen and (max-width: 600px) {
+    .form-container {
+      max-width: 100%; /* Ancho máximo en pantallas pequeñas */
+      margin: 10px; /* Margen más pequeño */
+      padding: 10px; /* Padding más pequeño */
+    }
+  }
+  

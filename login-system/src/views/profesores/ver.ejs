@@ -1,0 +1,95 @@
+<!-- ver.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Profesor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            font-family: 'Margarine', cursive;
+            background: url('/img/nuevo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .list-group-item {
+            border: none; /* Eliminar el borde de los elementos li */
+        }
+
+        .btn-custom {
+            display: inline-block;
+            width: calc(50% - 5px);
+            margin-right: 10px;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <h1>Detalles del Profesor</h1>
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Nombre:</strong> <%= profesor.nombre %></li>
+            <li class="list-group-item"><strong>Email:</strong> <%= profesor.email %></li>
+            <li class="list-group-item"><strong>Especialidad:</strong> <%= profesor.especialidad %></li>
+            <li class="list-group-item"><strong>Años de Experiencia:</strong> <%= profesor.experiencia_years %></li>
+            <li class="list-group-item"><strong>Fecha de Ingreso:</strong> <%= profesor.fecha_ingreso_formateada %></li>
+        </ul>
+        <div class="text-center mt-3">
+            <form action="/profesores" method="GET">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Regresar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

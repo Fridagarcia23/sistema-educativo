@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Administrador</title>
+    <!-- Enlace a Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    <!-- Enlace a Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Margarine', cursive;
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Permite desplazamiento si el contenido excede la altura de la ventana */
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #444;
+            flex-shrink: 0;
+        }
+        .profile img {
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+        }
+        .profile-info {
+            margin-left: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .nav-links li {
+            margin: 0;
+        }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+        }
+        .nav-links a:hover {
+            background-color: #495057;
+        }
+        .header {
+            background-color: #28a745; /* Verde */
+            color: #fff;
+            padding: 6px 8px; /* Ajusta el padding para reducir la distancia */
+            position: fixed;
+            top: 0;
+            left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Espacio entre el logo y el nombre del colegio */
+        }
+        
+        .header-logo img {
+            height: 60px; /* Ajusta el tamaño del logo */
+            width: auto;
+        }
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Espacio entre los botones */
+            padding: 10px 40px;
+        }
+        .header-buttons a {
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 6px 12px; /* Ajusta el padding para hacer los botones más pequeños */
+            border-radius: 5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Espacio entre el icono y el texto */
+            font-size: 0.9em; /* Ajusta el tamaño de la fuente si es necesario */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .header-buttons a:hover {
+            background-color: #4caf50; /* Verde claro */
+            color: #fff; /* Blanco para el texto */
+        }
+        .header-buttons i {
+            font-size: 1.6em; /* Tamaño del icono */
+        }
+        .dashboard-container {
+            margin-left: 250px;
+            margin-top: 60px;
+            padding: 20px;
+            width: calc(100% - 250px);
+        }
+        .modules-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .module {
+            background-color: #ffffff;
+            border-radius: 60px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: calc(25% - 20px); /* Ancho ajustado para 4 columnas */
+            max-width: calc(25% - 20px); /* Asegura que los módulos no sean más anchos que el ancho especificado */
+            transition: background-color 0.3s, transform 0.3s;
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .module:hover {
+            background-color: #f1f1f1;
+            transform: translateY(-5px);
+        }
+        .module-icon {
+            font-size: 2em; /* Ajustado para que se vea bien en el tamaño reducido */
+            margin: 15px 0;
+            color: #28a745;
+        }
+        .module-content {
+            padding: 15px; /* Ajustado para que el contenido se vea bien en el tamaño reducido */
+            text-align: center;
+        }
+        .module h3 {
+            margin: 0;
+            font-size: 1.3em; /* Ajustado para el tamaño reducido */
+        }
+        .module p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .footer {
+            background-color: #28a745;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+            position: fixed;
+            bottom: 0;
+            width: calc(100% - 250px);
+            margin-left: 250px;
+        }
+        @media (max-width: 1200px) {
+            .module {
+                width: calc(33.333% - 20px); /* 3 columnas para pantallas grandes */
+                max-width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 992px) {
+            .module {
+                width: calc(50% - 20px); /* 2 columnas para pantallas medianas */
+                max-width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .module {
+                width: 100%; /* 1 columna para pantallas pequeñas */
+                max-width: 100%;
+            }
+            .header {
+                left: 0;
+                width: 100%;
+            }
+            .dashboard-container {
+                margin-left: 0;
+                width: 100%;
+            }
+            .footer {
+                width: 100%;
+                margin-left: 0;
+            }
+        }            
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+            <div class="profile">
+                <img src="/img/usuario.jpg" alt="Profile Image">
+                <div class="profile-info">
+                    <div class="role"><%= user.rol %></div>
+                    <div class="admin-name"><%= user.nombre_usuario %></div>
+                </div>
+            </div>
+            <ul class="nav-links">
+            <li><a href="/grados"><i class="fas fa-graduation-cap"></i> Grados</a></li>
+            <li><a href="/reportes"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+            <li><a href="/asistencia"><i class="fas fa-user-check"></i> Asistencia</a></li>
+            <li><a href="/cursos"><i class="fas fa-book"></i> Cursos</a></li>
+            <li><a href="/notificaciones"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            <li><a href="/horarios"><i class="fas fa-clock"></i> Horarios</a></li>
+            <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>        
+    </nav>
+    <header class="header">
+        <% if (typeof success !== 'undefined') { %>
+            <div id="success-alert" class="alert alert-success" role="alert">
+                <%= success %>
+            </div>
+            <script>
+                setTimeout(function() {
+                    var successAlert = document.getElementById('success-alert');
+                    if (successAlert) {
+                        successAlert.style.display = 'none';
+                    }
+                }, 2000); // 2000 milisegundos = 2 segundos
+            </script>
+        <% } %>
+        <div class="header-logo">
+            <img src="/img/home.jpg" alt="Logo">
+            <h1>CENTRO ESCOLAR CECEC</h1>
+        </div>
+        <div class="header-buttons">
+            <a href="/configuracion"><i class="fas fa-cog"></i></a>
+                <a href="/perfil"><i class="fas fa-user"></i></a>
+        </div>
+    </header>
+    <div class="dashboard-container">
+        <div class="modules-container">
+            
+            <!-- Módulo de Grados -->
+            <a href="/grados" class="module grados">
+                <div class="module-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="module-content">
+                    <h3>Grados</h3>
+                    <p>Administra los diferentes grados escolares.</p>
+                </div>
+            </a>
+            <!-- Módulo de Reportes -->
+            <a href="/reportes" class="module reportes">
+                <div class="module-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="module-content">
+                    <h3>Reportes</h3>
+                    <p>Visualiza y genera reportes.</p>
+                </div>
+            </a>
+            
+            <!-- Módulo de Asistencia -->
+            <a href="/asistencia" class="module asistencia">
+                <div class="module-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="module-content">
+                    <h3>Asistencia</h3>
+                    <p>Controla la asistencia de los alumnos.</p>
+                </div>
+            </a>
+        
+            <!-- Módulo de Cursos -->
+            <a href="/cursos" class="module cursos">
+                <div class="module-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="module-content">
+                    <h3>Cursos</h3>
+                    <p>Gestiona los cursos ofrecidos.</p>
+                </div>
+            </a>
+        
+            <!-- Módulo de Notificaciones -->
+            <a href="/notificaciones" class="module notificaciones">
+                <div class="module-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="module-content">
+                    <h3>Notificaciones</h3>
+                    <p>Revisa y administra las notificaciones.</p>
+                </div>
+            </a>
+        
+            <!-- Módulo de Horarios -->
+            <a href="/horarios" class="module horarios">
+                <div class="module-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="module-content">
+                    <h3>Horarios</h3>
+                    <p>Gestiona los horarios escolares.</p>
+                </div>
+            </a>
+        
+            <!-- Módulo de Logout -->
+            <a href="/logout" class="module logout">
+                <div class="module-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <div class="module-content">
+                    <h3>Logout</h3>
+                    <p>Cierra sesión en la plataforma.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2024 ING. Frida Berlinda Garcia
+    </div>
+</body>
+</html>

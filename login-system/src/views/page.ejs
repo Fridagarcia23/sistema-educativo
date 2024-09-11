@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Historia</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Margarine', cursive;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #28a745; /* Verde suave */
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Espacio entre el logo y el título */
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .logo {
+            margin-left: 20px; /* Margen izquierdo para el logo */
+            height: 50px; /* Ajusta la altura máxima del logo */
+        }
+        header h1 {
+            margin: 0;
+            text-align: center;
+            flex-grow: 1; /* Hace que el título ocupe el espacio restante */
+        }
+        nav {
+            margin-right: 20px; /* Margen derecho para el menú de navegación */
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 20px;
+            text-align: center;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        footer p {
+            margin: 0;
+        }
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #28a745; /* Verde suave */
+        }
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        .image-gallery-container {
+            display: flex;
+            flex-wrap: wrap; /* Permite que las imágenes se ajusten en múltiples filas si es necesario */
+            justify-content: center; /* Centra las imágenes en el contenedor */
+            gap: 15px; /* Espacio entre las imágenes */
+            margin-top: 10px; /* Espacio entre el título y las imágenes */
+        }
+        .image-gallery img {
+            max-width: 200px; /* Ajusta el tamaño máximo de las imágenes según sea necesario */
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover; /* Asegura que las imágenes mantengan su aspecto dentro del contenedor */
+        }
+        .image-gallery a:hover img {
+            transform: scale(1.05);
+        }
+        .announcement, .contact-info {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .contact-info p {
+            margin-bottom: 10px;
+        }
+        .social-media a {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            line-height: 50px;
+            text-align: center;
+            margin: 10px;
+            font-size: 24px;
+            color: white;
+            text-decoration: none;
+        }
+        .social-media a.facebook {
+            background-color: #3b5998; /* Color de Facebook */
+        }
+        .social-media a.whatsapp {
+            background-color: #25D366; /* Color de WhatsApp */
+        }
+        .social-media a.email {
+            background-color: #007bff; /* Color de Email */
+        }
+        .social-media a:hover {
+            opacity: 0.8; /* Efecto de hover */
+        }
+        .back-link {
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #28a745;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        .image-title {
+            text-align: center;
+            font-size: 16px;
+            color: #000; /* Color negro */
+            text-decoration: none; /* Sin subrayado */
+            margin-top: 5px;
+        }
+        
+        .image-gallery a {
+            text-decoration: none; /* Eliminar subrayado del enlace */
+            color: inherit; /* Mantener el color del texto */
+        }
+        @media (max-width: 1200px) {
+            .module {
+                flex: 1 1 calc(33.333% - 20px); /* 3 columnas para pantallas grandes */
+                max-width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 992px) {
+            .module {
+                flex: 1 1 calc(50% - 20px); /* 2 columnas para pantallas medianas */
+                max-width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .module {
+                flex: 1 1 100%; /* 1 columna para pantallas pequeñas */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/img/home.jpg" alt="Logo de la Escuela" class="logo">
+        <h1>Servicios</h1>
+        <nav>
+            <a href="/home"><i class="fas fa-home"></i> Inicio</a>
+            <a href="/page"><i class="fas fa-briefcase"></i> Servicios</a>
+            <a href="/sobre"><i class="fas fa-history"></i> Nuestra Historia</a>
+            <a href="/album"><i class="fas fa-images"></i> Álbum de Fotos</a>
+            <a href="/contacto"><i class="fas fa-envelope"></i> Contacto</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2 class="section-title">Misión</h2>
+            <div class="content">
+                <p>La misión de la Escuela de Cristo es proporcionar una educación integral de alta calidad que prepare a los estudiantes para enfrentar los desafíos del futuro...</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Visión</h2>
+            <div class="content">
+                <p>La visión de la Escuela de Cristo es ser una institución educativa líder en la región, reconocida por su compromiso con la excelencia académica...</p>
+            </div>
+        </section>
+
+        <section class="contact-info">
+            <h2 class="section-title">Información de Contacto</h2>
+            <p><i class="fas fa-phone"></i> Teléfono: +502 3387 0932</p>
+            <p><i class="fas fa-map-marker-alt"></i> Dirección: <a href="https://maps.app.goo.gl/sgEGVW1K81iRM5Ee8" target="_blank" rel="noopener noreferrer"> 6ta calle 2-87 zona 4, colonia venecia I, Villa Nueva guatemala, 00502</a></p>
+
+            <!-- Iconos sociales con tooltips -->
+            <div class="social-media">
+                <a href="mailto:Info@cecec.edu.gt" class="email" data-bs-toggle="tooltip" data-bs-placement="top" title="Correo Electrónico">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="https://www.facebook.com/cecec.gt?mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer" class="facebook" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://wa.me/50233870932?text=Hola,%20deseo%20mas%20informaci%C3%B3n%20por%20favor.%20" target="_blank" rel="noopener noreferrer" class="whatsapp" data-bs-toggle="tooltip" data-bs-placement="top" title="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </section>
+
+        <section class="image-gallery">
+            <h2 class="section-title">Grados que Ofrecemos</h2>
+            <div class="image-gallery-container">
+                <a href="/preprimaria">
+                    <img src="/img/pre.jpg" alt="Preprimaria">
+                    <div class="image-title">Preprimaria</div>
+                </a>
+                <a href="/primaria">
+                    <img src="/img/primaria.jpg" alt="Primaria">
+                    <div class="image-title">Primaria</div>
+                </a>
+                <a href="/basico">
+                    <img src="/img/basico.jpg" alt="Básico">
+                    <div class="image-title">Básico</div>
+                </a>
+                <a href="/diversificado">
+                    <img src="/img/diver.jpg" alt="Diversificado">
+                    <div class="image-title">Diversificado</div>
+                </a>    
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 ING. Frida Berlinda Garcia</p>
+    </footer>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Bootstrap tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+</body>
+</html>

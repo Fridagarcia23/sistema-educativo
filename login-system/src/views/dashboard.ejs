@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Administrador</title>
+    <!-- Enlace a Google Fonts para una tipografía más profesional -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Enlace a Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif; /* Tipografía más moderna y profesional */
+            display: flex;
+            min-height: 100vh;
+            background-color: #f7f7f7;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2a2d34; /* Color más neutral y profesional */
+            color: #fff;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .nav-links a:hover {
+            background-color: #3e4149;
+        }
+        .header {
+            background-color: #4b6584; /* Color más serio */
+            color: #fff;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
+            justify-content: space-between; /* Separa el nombre de la escuela y el perfil */
+            align-items: center;
+            z-index: 1000;
+        }
+        .header-logo img {
+            height: 80px;
+            margin-right: 15px;
+        }
+        .header h1 {
+            font-weight: 600;
+            font-size: 1.8em;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            position: relative; /* Para poder posicionar el menú emergente */
+        }
+        .profile-header img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+        .profile-header .profile-info {
+            margin-right:30px;
+            color: #fff;
+           
+        }
+        .profile-header .profile-info .name {
+            font-size: 1em;
+        }
+        .profile-header .profile-info .role {
+            font-size: 0.8em;
+            color: #cfcfcf;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(104, 19, 19, 0.1);
+            z-index: 1001;
+            overflow: hidden;
+            transition: opacity 0.3s;
+        }
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+        }
+        .dropdown-menu a i {
+            margin-right: 10px;
+        }
+        .dropdown-menu a:hover {
+            background-color: #f7f7f7;
+        }
+        .profile-header:hover .dropdown-menu {
+            display: block;
+        }
+        .dashboard-container {
+            margin-left: 250px;
+            margin-top: 60px;
+            padding: 20px;
+            width: calc(100% - 250px);
+        }
+        .modules-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .module {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            width: calc(25% - 20px);
+            transition: transform 0.3s;
+        }
+        .module:hover {
+            transform: translateY(-5px);
+        }
+        .module h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        .footer {
+            background-color: #4b6584; /* Mismo color que el header */
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: calc(100% - 250px);
+            margin-left: 250px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .header, .footer {
+                left: 200px;
+                width: calc(100% - 200px);
+            }
+            .dashboard-container {
+                margin-left: 200px;
+                width: calc(100% - 200px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <ul class="nav-links">
+            <li><a href="/usuarios"><i class="fas fa-users"></i> Usuarios</a></li>
+            <li><a href="/grados"><i class="fas fa-graduation-cap"></i> Grados</a></li>
+            <li><a href="/profesores"><i class="fas fa-chalkboard-teacher"></i> Profesores</a></li>
+            <li><a href="/reportes"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+            <li><a href="/asistencia"><i class="fas fa-user-check"></i> Asistencia</a></li>
+            <li><a href="/pagos"><i class="fas fa-money-bill-alt"></i> Pagos</a></li>
+            <li><a href="/periodo"><i class="fas fa-calendar-alt"></i> Periodo Escolar</a></li>
+            <li><a href="/recibos"><i class="fas fa-file-invoice"></i> Crear Recibos</a></li>
+            <li><a href="/cursos"><i class="fas fa-book"></i> Cursos</a></li>
+            <li><a href="/notificaciones"><i class="fas fa-bell"></i> Notificaciones</a></li>
+            <li><a href="/horarios"><i class="fas fa-clock"></i> Horarios</a></li>
+        </ul>
+    </nav>
+    <header class="header">
+        <div class="header-logo">
+            <img src="/img/home.jpg" alt="Logo">
+        </div>
+        <h1>CENTRO ESCOLAR CECEC</h1>
+        <div class="profile-header">
+            <img src="<%= user.profilePicture %>" alt="Foto de Perfil">
+            <div class="profile-info">
+                <div class="name"><%= user.nombre_usuario %></div>
+                <div class="role"><%= user.rol %></div>
+            </div>
+            <div class="dropdown-menu">
+                <a href="/perfil"><i class="fas fa-user"></i> Perfil</a>
+                <a href="/configuracion"><i class="fas fa-cog"></i> Configuración</a>
+                <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </header>
+    <div class="dashboard-container">
+        <div class="modules-container">
+            <div id="history-content" style="margin-top: 10px; text-align: center;">
+                <h2 style="font-size: 2em; font-weight: 600;">Nuestra Historia</h2>
+                <div style="max-width: 800px; margin: 0 auto; text-align: justify; font-size: 1.1em; line-height: 1.8;">
+                <p>
+                    La Escuela de Cristo se estableció hace diez años con la intención de brindar a los niños y jóvenes de la comunidad de Villa Nueva, Guatemala, una educación completa y de alta calidad. La necesidad de una institución educativa que combinara la excelencia académica con un enfoque en el desarrollo integral de los estudiantes fue lo que llevó a la fundación de la escuela.
+                </p>
+                <p>
+                    La Escuela de Cristo comenzó con el objetivo de establecer una base sólida, desarrollando un currículo académico que incluía tanto materias básicas como programas adicionales de formación en valores y habilidades sociales. La institución se destacó por su enfoque en la educación individualizada y el apoyo constante a todos los estudiantes.
+                </p>
+                <p>
+                    La escuela ha experimentado un crecimiento significativo tanto en el número de estudiantes como en la calidad de las instalaciones. Las instalaciones se ampliaron para incluir una cancha deportiva para aumentar la actividad física y el espíritu deportivo. Además, se inauguró una cafetería para ofrecer un servicio de alimentación que apoya el bienestar general de la comunidad escolar y fomenta una dieta saludable.
+                </p>
+                <p>
+                    A pesar de estos avances, la gestión administrativa de la escuela, en particular la gestión de datos de los estudiantes y la generación de recibos, sigue siendo principalmente manual. Esto ha generado problemas en términos de eficiencia y precisión, lo que ha llevado a la adopción de un sistema digital para modernizar estos procesos.
+                </p>
+                <p>
+                    El objetivo del proyecto de implementación del nuevo sistema de gestión de datos es resolver estos problemas, mejorar la gestión de la información y aumentar la eficiencia operativa. La misión de la Escuela de Cristo de brindar una educación de alta calidad, adaptándola a las necesidades actuales y preparando a sus estudiantes para un futuro próspero sigue siendo un compromiso.
+                </p>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="footer">
+        © 2024 ING. Frida Berlinda Garcia
+    </div>
+</body>
+</html>

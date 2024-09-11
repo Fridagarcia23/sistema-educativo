@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a La Escuela de Cristo</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Margarine', cursive; /* Cambiado a Margarine */
+            display: flex;
+            flex-direction: column; /* Cambiado para permitir el pie de página */
+            align-items: center;
+            justify-content: center;
+            background: url('/img/rol.avif') no-repeat center center fixed; /* Imagen de fondo */
+            background-size: cover;
+        }
+
+        .container {
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            max-width: 1200px;
+            flex: 1; /* Permite que el contenedor ocupe el espacio restante */
+        }
+        .container img {
+            max-width: 400px; /* Tamaño del logo */
+            opacity: 0.8; /* Nivel de transparencia */
+            margin-right: 100px; /* Espacio entre la imagen y el texto */
+        }
+        .content {
+            color: rgb(8, 8, 8);
+            text-align: left; /* Alineación a la izquierda */
+        }
+        .content h1 {
+            font-size: 90px;
+            margin: 0;
+        }
+        .content p {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        .content a {
+            margin-top: 30px;
+            display: inline-block;
+            background-color: #28a745; /* Verde suave */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .content a:hover {
+            background-color: #218838; /* Verde más oscuro */
+        }
+        footer {
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+        }
+        footer p {
+            margin: 0;
+        }
+        @media (max-width: 1200px) {
+            .module {
+                flex: 1 1 calc(33.333% - 20px); /* 3 columnas para pantallas grandes */
+                max-width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 992px) {
+            .module {
+                flex: 1 1 calc(50% - 20px); /* 2 columnas para pantallas medianas */
+                max-width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .module {
+                flex: 1 1 100%; /* 1 columna para pantallas pequeñas */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="/img/home.jpg" alt="Logo de la Escuela">
+        <div class="content">
+            <h1>La Escuela de Cristo</h1>
+            <p>Bienvenidos a nuestra página web escolar</p>
+            <a href="/page"><i class="fas fa-sign-in-alt"></i> Entrar</a>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 ING. Frida Berlinda Garcia</p>
+    </footer>
+</body>
+</html>

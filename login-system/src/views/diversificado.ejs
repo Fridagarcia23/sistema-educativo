@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diversificado</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Margarine', cursive;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #28a745; /* Verde suave */
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        header .logo img {
+            height: 50px; /* Ajusta el tamaño del logo */
+            margin-left: 20px;
+        }
+        header h1 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }
+        nav {
+            margin: 0 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            color: white; /* Cambia el color del texto a blanco */
+            font-size: 18px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #cce5ff; /* Color de texto en el hover */
+        }
+        .section-title {
+            margin-top: 80px; /* Para compensar el encabezado fijo */
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #28a745; /* Verde suave */
+        }
+        .content {
+            max-width: 800px;
+            margin: 90px auto 30px; /* Ajusta el margen inferior aquí */
+            text-align: left;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .content h2 {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        .content p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .content ul li {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .content ul li i {
+            margin-right: 10px;
+            color: #28a745;
+        }
+        .content .schedule, .content .contact {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .content .contact p {
+            margin-bottom: 10px;
+        }
+        .content .social-icons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .content .social-icons a {
+            margin: 0 10px;
+            font-size: 24px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .content .social-icons a.facebook {
+            background-color: #3b5998; /* Color azul de Facebook */
+            color: white;
+        }
+        .content .social-icons a.whatsapp {
+            background-color: #25D366; /* Color verde de WhatsApp */
+            color: white;
+        }
+        .content .social-icons a.email {
+            background-color: #007bff; /* Color de Email */
+            color: white;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            margin-top: 30px;
+        }
+        footer p {
+            margin: 0;
+        }
+
+        /* Flexbox Container for Images */
+        .image-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .image-row img {
+            width: 30%; /* Ajusta el ancho a un 30% del contenedor */
+            height: auto; /* Mantiene la proporción de la imagen */
+            border-radius: 8px;
+            cursor: pointer; /* Cambia el cursor al pasar sobre la imagen */
+            max-height: 230px; /* Establece una altura máxima para evitar que sean demasiado largas */
+        }
+        @media (max-width: 1200px) {
+            .module {
+                flex: 1 1 calc(33.333% - 20px); /* 3 columnas para pantallas grandes */
+                max-width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 992px) {
+            .module {
+                flex: 1 1 calc(50% - 20px); /* 2 columnas para pantallas medianas */
+                max-width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .module {
+                flex: 1 1 100%; /* 1 columna para pantallas pequeñas */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/img/home.jpg" alt="Logo">
+        </div>
+        <h1>Diversificado</h1>
+        <nav>
+            <a href="/home"><i class="fas fa-home"></i> Inicio</a>
+            <a href="/page"><i class="fas fa-briefcase"></i> Servicios</a>
+            <a href="/sobre"><i class="fas fa-history"></i> Nuestra Historia</a>
+            <a href="/album"><i class="fas fa-images"></i> Álbum de Fotos</a>
+            <a href="/contacto"><i class="fas fa-envelope"></i> Contacto</a>
+        </nav>
+    </header>
+    <div class="content">
+        <h2 class="section-title">Descripción</h2>
+        <p>En Diversificado, nuestros estudiantes se preparan para enfrentar los desafíos de la vida adulta y profesional con un enfoque en especializaciones académicas. Ofrecemos una amplia gama de opciones de formación para que cada estudiante pueda seguir su camino según sus intereses y habilidades.</p>
+
+        <h2 class="section-title">Materias Principales</h2>
+        <ul>
+            <li><i class="fas fa-book"></i> Matemáticas Avanzadas</li>
+            <li><i class="fas fa-globe"></i> Ciencias Sociales Avanzadas</li>
+            <li><i class="fas fa-flask"></i> Ciencias Naturales Avanzadas</li>
+            <li><i class="fas fa-language"></i> Idiomas Estratégicos</li>
+            <li><i class="fas fa-briefcase"></i> Educación para el Trabajo</li>
+            <li><i class="fas fa-paint-brush"></i> Electivas Artísticas y Culturales</li>
+        </ul>
+
+        <div class="schedule">
+            <h2 class="section-title">Horario</h2>
+            <p>Clases de lunes a viernes, de 7:00 AM a 12:00 PM.</p>
+        </div>
+
+        <div class="contact">
+            <h2 class="section-title">Contacto</h2>
+            <p>Para más información sobre este nivel, por favor contáctenos en:</p>
+            <div class="social-icons">
+                <a href="mailto:Info@cecec.edu.gt" target="_blank" class="email" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Correo Electronico"><i class="fas fa-envelope"></i></a>
+                <a href="https://www.facebook.com/cecec.gt?mibextid=ZbWKwL" target="_blank" class="facebook" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://wa.me/50233870932?text=Hola,%20deseo%20mas%20información" target="_blank" class="whatsapp" data-bs-toggle="tooltip" data-bs-placement="bottom" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+
+        <div class="image-row">
+            <img src="/img/diver.jpg" alt="Imagen 1" class="clickable-image">
+            <img src="/img/anuc.jpg" alt="Imagen 2" class="clickable-image">
+            <img src="/img/ari.jpeg" alt="Imagen 3" class="clickable-image">
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 ING. Frida Berlinda Garcia</p>
+    </footer>
+    <!-- Modal para mostrar la imagen en grande -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Vista Previa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="Imagen Grande" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript para manejar el clic en las imágenes -->
+    <script>
+        document.querySelectorAll('.clickable-image').forEach(image => {
+            image.addEventListener('click', function() {
+                const modalImage = document.getElementById('modalImage');
+                modalImage.src = this.src; // Asigna la fuente de la imagen seleccionada al modal
+                const myModal = new bootstrap.Modal(document.getElementById('imageModal'));
+                myModal.show(); // Muestra el modal
+            });
+        });
+    </script>
+    <script>
+             // Initialize Bootstrap tooltips
+             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                 return new bootstrap.Tooltip(tooltipTriggerEl);
+             });
+         </script>
+</body>
+</html>

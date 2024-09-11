@@ -1,0 +1,105 @@
+/* estiloProfe.css */
+
+/* Estilos generales */
+body {
+    font-family: 'Margarine', cursive;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    background-image: url('../img/dash.jpeg'); /* Ruta a tu imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 90px auto;
+    padding: 20px;
+    border: 2px dotted #333;
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.profile-info {
+    font-size: 16px;
+}
+
+.center-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modules {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Distribuir en 3 columnas */
+    grid-gap: 20px;
+}
+
+.module {
+    background-color: #fff;
+    padding: 30px; /* Aumentar el padding para hacer los módulos más grandes */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.module a {
+    text-decoration: none;
+    color: #333;
+    font-size: 18px;
+}
+
+/* Colores específicos para los módulos */
+.module-blue {
+    background-color: #87CEFA; /* Azul claro */
+}
+
+.module-green {
+    background-color: #98FB98; /* Verde claro */
+}
+
+.module-orange {
+    background-color: #FFA500; /* Naranja */
+}
+
+.module-purple {
+    background-color: #9370DB; /* Violeta medio */
+}
+
+.module-pink {
+    background-color: #FFC0CB; /* Rosa */
+}
+
+.module-red {
+    background-color: #FF6347; /* Rojo coral */
+}
+
+.module:hover {
+    transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+    .modules {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .modules {
+        grid-template-columns: 1fr;
+    }
+}

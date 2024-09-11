@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia de la Escuela</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Margarine', cursive;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        header {
+            background-color: #28a745; /* Verde suave */
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header img {
+            height: 50px;
+            margin-left: 20px;
+        }
+        header h1 {
+            text-align: center;
+            margin: 0;
+        }
+        nav {
+            margin-right: 30px; /* Margen derecho para el menú de navegación */
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        nav a i {
+            margin-right: 5px;
+        }
+        main {
+            padding: 30px 20px;
+        }
+        section {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        section h2 {
+            color: #28a745; /* Verde suave */
+        }
+        section p {
+            line-height: 1.8;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            margin-top: 30px;
+        }
+        footer p {
+            margin: 0;
+        }
+        @media (max-width: 1200px) {
+            .module {
+                flex: 1 1 calc(33.333% - 20px); /* 3 columnas para pantallas grandes */
+                max-width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 992px) {
+            .module {
+                flex: 1 1 calc(50% - 20px); /* 2 columnas para pantallas medianas */
+                max-width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .module {
+                flex: 1 1 100%; /* 1 columna para pantallas pequeñas */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/img/home.jpg" alt="Logo de la Escuela">
+        <h1>Historia de la Escuela</h1>
+        <nav>
+            <a href="/home"><i class="fas fa-home"></i> Inicio</a>
+            <a href="/page"><i class="fas fa-briefcase"></i> Servicios</a>
+            <a href="/sobre"><i class="fas fa-history"></i> Nuestra Historia</a>
+            <a href="/album"><i class="fas fa-images"></i> Álbum de Fotos</a>
+            <a href="/contacto"><i class="fas fa-envelope"></i> Contacto</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Nuestra Historia</h2>
+            <p>
+                La Escuela de Cristo se estableció hace diez años con la intención de brindar a los niños y jóvenes de la comunidad de Villa Nueva, Guatemala, una educación completa y de alta calidad. La necesidad de una institución educativa que combinara la excelencia académica con un enfoque en el desarrollo integral de los estudiantes fue lo que llevó a la fundación de la escuela.
+            </p>
+            <p>
+                La Escuela de Cristo comenzó con el objetivo de establecer una base sólida, desarrollando un currículo académico que incluía tanto materias básicas como programas adicionales de formación en valores y habilidades sociales. La institución se destacó por su enfoque en la educación individualizada y el apoyo constante a todos los estudiantes.
+            </p>
+            <p>
+                La escuela ha experimentado un crecimiento significativo tanto en el número de estudiantes como en la calidad de las instalaciones. Las instalaciones se ampliaron para incluir una cancha deportiva para aumentar la actividad física y el espíritu deportivo. Además, se inauguró una cafetería para ofrecer un servicio de alimentación que apoya el bienestar general de la comunidad escolar y fomenta una dieta saludable.
+            </p>
+            <p>
+                A pesar de estos avances, la gestión administrativa de la escuela, en particular la gestión de datos de los estudiantes y la generación de recibos, sigue siendo principalmente manual. Esto ha generado problemas en términos de eficiencia y precisión, lo que ha llevado a la adopción de un sistema digital para modernizar estos procesos.
+            </p>
+            <p>
+                El objetivo del proyecto de implementación del nuevo sistema de gestión de datos es resolver estos problemas, mejorar la gestión de la información y aumentar la eficiencia operativa. La misión de la Escuela de Cristo de brindar una educación de alta calidad, adaptándola a las necesidades actuales y preparando a sus estudiantes para un futuro próspero sigue siendo un compromiso.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 ING. Frida Berlinda Garcia</p>
+    </footer>
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
