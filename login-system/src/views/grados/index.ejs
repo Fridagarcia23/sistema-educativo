@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD de Grados</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Versión completa de jQuery -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Margarine:wght@400;700&display=swap" rel="stylesheet">
+
+
+    <style>
+         /* Estilo básico para el menú lateral */
+         body {
+            margin: 0;
+            font-family: 'Margarine', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background-color: #f7f7f7;
+        }
+        
+        /* Menú lateral */
+        .sidebar {
+            width: 250px;
+            background-color: #2a2d34;
+            color: #fff;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            transition: left 0.3s ease;
+            overflow: auto;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .nav-links li {
+            position: relative;
+        }
+        
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 13.5px;
+            color: #fff;
+            text-decoration: none;
+            position: relative;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background-color: #3e4149;
+            transform: translateY(-5px);
+        }
+        
+        .header {
+            background-color: #4b6584;
+            color: #fff;
+            padding: 12px;
+            position: fixed;
+            top: 0;
+            left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+        
+        .header-logo img {
+            height: 80px;
+            margin-right: 15px;
+        }
+        
+        .header h1 {
+            font-weight: 800;
+            font-size: 1.8em;
+            text-align: center;
+            margin: 0 auto;
+        }
+        
+        .content {
+            margin-left: 270px;
+            margin-top: 100px;
+            padding: 20px;
+        }
+
+        .header-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alinea el contenido a la izquierda */
+            margin-left: 150px; /* Alinea a la izquierda en relación al contenido restante */
+            padding: 5px;
+        }
+        
+        .header-section h1 {
+            margin-bottom: 5px; /* Espacio entre el título y el botón */
+        }
+        
+        .header-section .btn {
+            margin-bottom: 20px; /* Espacio entre el botón y otros elementos */
+        }
+        
+        /* Ajusta el contenedor general para que no afecte el contenido del filtro y registro por página */
+        .container {
+            margin-top: 60px;
+            padding: 20px;
+        }
+
+        /* Estilos de los mensajes emergentes */
+#messageBox {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    width: 300px;
+}
+        /* Estilo básico para la tabla */
+        .table {
+            position:relative;
+            top: -10px;
+            margin-top: 0px;
+            border-collapse: collapse;
+            width: 90%; /* Reduce el ancho total de la tabla */
+            max-width: 90%; /* Ajusta la tabla para que no ocupe el 100% del ancho */
+            table-layout: fixed;
+            margin-right: auto; /* Centra la tabla */
+            margin-left: 160px;  /* Centra la tabla */
+        }
+        
+        .table th, .table td {
+            padding: 8px 8px;
+            text-align: left;
+            word-wrap: break-word; /* Permite que el contenido dentro de las celdas se ajuste */
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .table thead th {
+            background-color: #359b16;
+            color: white;
+        }
+
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 5px;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .button-container {
+            margin-bottom: 20px; /* Espacio entre el botón y otros elementos */
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-weight: bold;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Estilo para los filtros */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-start; /* Mueve el filtro a la derecha */
+            margin-left: 160px;
+        }
+        
+        .filter-input {
+            max-width: 200px; /* Aumenta el tamaño del campo de entrada */
+            width: 200px; /* Asegura que se mantenga el ancho */
+            flex: 1;
+            padding: 23px; /* Aumenta el espacio interior sin afectar el tamaño de la fuente */
+            font-size: 16px; /* Mantiene el tamaño de la fuente */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .filter-button {
+            flex: 0 0 auto;
+            align-self: center;
+        }
+        
+        .btn-filter {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        
+        .btn-filter:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        
+        /* Selección de registros por página */
+        .records-per-page-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: -3px;
+            margin-bottom: 20px;
+            margin-left: 160px;
+        }
+        
+        .records-per-page-label {
+            font-weight: bold;
+        }
+        
+        .records-per-page-select {
+            max-width: 150px;
+        }
+
+        /* Estilos para los mensajes emergentes */
+        #messageBox {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            width: 300px;
+        }
+
+        /* Paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            margin: 20px 0;
+            list-style: none;
+        }
+        
+        .pagination .page-item {
+            margin: 0 5px;
+        }
+        
+        .pagination .page-link {
+            display: block;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #007bff;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        
+        .pagination .page-link:hover {
+            background-color: #e9ecef;
+            border-color: #ddd;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            pointer-events: none;
+        }
+        
+        .pagination .page-link:focus, .pagination .page-link:active {
+            box-shadow: none;
+        }
+
+        /* Modales */
+        .modal-header {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .modal-header .btn-close {
+            color: white;
+        }
+        
+        .modal .btn {
+            margin-top: 10px;
+        }
+        #btnAddGrade i {
+            margin-right: 1px; /* Espacio entre el ícono y el texto */
+        }
+    </style>
+</head>
+<body>
+    <!-- Menú lateral -->
+    <nav class="sidebar">
+        <ul class="nav-links">
+            <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="/usuarios"><i class="fas fa-users"></i> Usuarios</a></li>
+            <li><a href="/grados"><i class="fas fa-graduation-cap"></i> Grados</a></li>
+            <li><a href="/alumnos"><i class="fas fa-user-graduate"></i> Alumnos</a></li>
+            <li><a href="/profesores"><i class="fas fa-chalkboard-teacher"></i> Profesores</a></li>
+            <li><a href="/reportes"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+            <li><a href="/asistencia"><i class="fas fa-user-check"></i> Asistencia</a></li>
+            <li><a href="/pagos"><i class="fas fa-money-bill-alt"></i> Pagos</a></li>
+            <li><a href="/periodo"><i class="fas fa-calendar-alt"></i> Periodo Escolar</a></li>
+            <li><a href="/recibos"><i class="fas fa-file-invoice"></i> Crear Recibos</a></li>
+            <li><a href="/cursos"><i class="fas fa-book"></i> Cursos</a></li>
+            <li><a href="/horarios"><i class="fas fa-clock"></i> Horarios</a></li>
+            <li><a href="/notificaciones"><i class="fas fa-bell"></i> Notificaciones</a></li>
+        </ul>
+    </nav>
+    <header class="header">
+        <div class="header-logo">
+            <img src="/img/home.jpg" alt="Logo">
+        </div>
+        <h1>CENTRO ESCOLAR CECEC</h1>
+    </header>
+    <div class="container">
+        <div class="header-section">
+            <h1 class="mt-4">Grados</h1>
+            <button id="btnAddGrade" class="btn btn-primary mb-4" data-toggle="modal" data-target="#gradeModal"> <i class="fas fa-user-plus"></i> Agregar Nuevo Grado</button></div>
+        
+            <!-- Opciones de cantidad de registros por página -->
+        <div class="records-per-page-container">
+            <label for="recordsPerPage" class="form-label">Registros por Página:</label>
+            <select id="recordsPerPage" class="form-control records-per-page-select">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+         <!-- Filtros -->
+         <div class="filter-container mb-4">
+            <input type="text" id="nameFilter" class="form-control filter-input" placeholder="Nombre">
+            <input type="text" id="nivelFilter" class="form-control filter-input" placeholder="Nivel Académico">
+            <input type="text" id="seccionesFilter" class="form-control filter-input" placeholder="Secciones">
+            <button id="filterButton" class="btn btn-filter filter-button">Filtrar</button>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Grado</th>
+                    <th>Nivel Académico</th>
+                    <th>Secciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="gradeTableBody">
+                <!-- Los datos se llenarán con JavaScript -->
+            </tbody>
+        </table>
+         <!-- Paginación -->
+         <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-end" id="pagination">
+                <!-- Los botones de paginación se cargarán aquí -->
+            </ul>
+        </nav>
+    </div>
+    </div>
+
+<!-- Modal -->
+<div class="modal fade" id="gradeModal" tabindex="-1" role="dialog" aria-labelledby="gradeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="gradeModalLabel">Agregar Nuevo Grado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="gradeForm">
+                <div class="modal-body">
+                    <input type="hidden" id="gradeId" name="id_grado">
+                    <div class="form-group">
+                        <label for="nombre_grado">Nombre del Grado</label>
+                        <input type="text" class="form-control" id="nombre_grado" name="nombre_grado" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nivel_academico">Nivel Académico</label>
+                        <input type="text" class="form-control" id="nivel_academico" name="nivel_academico" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="secciones">Secciones (separadas por coma)</label>
+                        <input type="text" class="form-control" id="secciones" name="secciones">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" id="submitButton" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal de Editar Grado -->
+<div class="modal fade" id="editGradeModal" tabindex="-1" role="dialog" aria-labelledby="editGradeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editGradeModalLabel">Editar Grado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editGradeForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editGradeId" name="id_grado">
+                    <div class="form-group">
+                        <label for="editNombreGrado">Nombre del Grado</label>
+                        <input type="text" class="form-control" id="editNombreGrado" name="nombre_grado" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editNivelAcademico">Nivel Académico</label>
+                        <input type="text" class="form-control" id="editNivelAcademico" name="nivel_academico" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSecciones">Secciones (separadas por coma)</label>
+                        <input type="text" class="form-control" id="editSecciones" name="secciones">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Eliminar Grado -->
+<div class="modal fade" id="deleteGradeModal" tabindex="-1" role="dialog" aria-labelledby="deleteGradeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteGradeModalLabel">Eliminar Grado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este grado?</p>
+                <input type="hidden" id="deleteGradeId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Añade esto para mostrar mensajes -->
+<div id="messageBox" class="alert" style="display:none;"></div>
+
+<!-- jQuery (necesario para Bootstrap) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Font Awesome (para el ícono) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
+
+<script>
+    function showMessage(type, message) {
+        const messageBox = $('#messageBox');
+        
+        // Limpia cualquier icono y texto anterior
+        messageBox.removeClass('alert-success alert-danger').addClass(`alert-${type}`);
+        
+        // Establece el icono y el texto según el tipo de mensaje
+        let icon;
+        if (type === 'success') {
+            icon = 'fas fa-check-circle'; // Icono para mensajes de éxito
+        } else if (type === 'danger') {
+            icon = 'fas fa-exclamation-circle'; // Icono para mensajes de error
+        }
+        
+        messageBox.html(`<i class="${icon} mr-2"></i>${message}`);
+        messageBox.show();
+        
+        // Oculta el mensaje después de 3 segundos
+        setTimeout(function() {
+            messageBox.fadeOut();
+        }, 3000);
+    }
+    
+    
+    $('#gradeForm').on('submit', function(e) {
+        e.preventDefault(); // Previene el envío por defecto del formulario
+    
+        const data = $(this).serialize(); // Serializa los datos del formulario
+        const id_grado = $('#gradeId').val();
+        const url = id_grado ? `/api/grados/update` : `/api/grados/create`; // Determina la URL dependiendo si es creación o actualización
+    
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: data,
+            success: function(result) {
+                if (result.success) {
+                    loadGrades(); // Recarga los datos en la tabla
+                    $('#gradeModal').modal('hide'); // Cierra el modal
+                    $('.modal-backdrop').remove(); // Elimina el backdrop
+                    showMessage('success', 'Grado guardado con éxito.');
+                } else {
+                    showMessage('danger', 'Error al guardar el grado.');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error en la solicitud:', textStatus, errorThrown);
+                showMessage('danger', 'Error al guardar el grado.');
+            }
+        });
+    });
+    
+// Función para abrir el modal de eliminar
+function deleteGrade(id) {
+$('#deleteGradeId').val(id);
+$('#deleteGradeModal').modal('show');
+}
+
+// Manejo de la confirmación de eliminación de grado
+$('#confirmDeleteBtn').on('click', function() {
+    const id = $('#deleteGradeId').val();
+    $.ajax({
+        url: '/api/grados/delete',
+        method: 'POST',
+        data: { id_grado: id },
+        success: function(result) {
+            if (result.success) {
+                loadGrades(); // Recarga los datos en la tabla
+                $('#deleteGradeModal').modal('hide');
+                showMessage('success', 'Grado eliminado con éxito.');
+            } else {
+                showMessage('danger', 'Error al eliminar el grado.');
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error en la solicitud:', textStatus, errorThrown);
+            showMessage('danger', 'Error al eliminar el grado.');
+        }
+    });
+});
+    // Función para cargar datos en el modal de editar
+    function editGrade(id) {
+        console.log('Editando grado con ID:', id);
+        $.get(`/api/grados/${id}`, function(grado) {
+            console.log('Datos del grado:', grado);
+            $('#editGradeId').val(grado.id_grado);
+            $('#editNombreGrado').val(grado.nombre_grado);
+            $('#editNivelAcademico').val(grado.nivel_academico);
+            $('#editSecciones').val(grado.secciones || '');
+            $('#editGradeModal').modal('show');
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('Error al cargar los datos del grado:', textStatus, errorThrown);
+            alert('Error al cargar los datos del grado.');
+        });
+    }
+
+    $(document).ready(function() {
+        function editGrade(id) {
+            console.log('Editando grado con ID:', id);
+            $.get(`/api/grados/${id}`, function(grado) {
+                console.log('Datos del grado:', grado);
+                $('#editGradeId').val(grado.id_grado);
+                $('#editNombreGrado').val(grado.nombre_grado);
+                $('#editNivelAcademico').val(grado.nivel_academico);
+                $('#editSecciones').val(grado.secciones || '');
+                $('#editGradeModal').modal('show');
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Error al cargar los datos del grado:', textStatus, errorThrown);
+                alert('Error al cargar los datos del grado.');
+            });
+        }
+    
+        // Manejo del formulario de edición de grado
+$('#editGradeForm').on('submit', function(e) {
+    e.preventDefault();
+    const data = $(this).serialize();
+
+    $.ajax({
+        url: '/api/grados/update',
+        method: 'POST',
+        data: data,
+        success: function(result) {
+            if (result.success) {
+                loadGrades(); // Recarga los datos en la tabla
+                $('#editGradeModal').modal('hide');
+                showMessage('success', 'Grado editado con éxito.'); // Muestra un mensaje de éxito
+            } else {
+                showMessage('danger', 'Error al guardar los cambios.'); // Muestra un mensaje de error
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error en la solicitud:', textStatus, errorThrown);
+            showMessage('danger', 'Error al guardar los cambios.'); // Muestra un mensaje de error
+        }
+    });
+});
+    });
+    
+    function loadGrades() {
+        $.get('/api/grados', function(grados) {
+            console.log(grados); // Verifica la salida en la consola del navegador
+            applyFilter(grados); // Aplica el filtro a los grados cargados
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('Error en la solicitud:', textStatus, errorThrown);
+            alert('Error al cargar los grados.');
+        });
+    }
+    $(document).ready(function() {
+        loadGrades(); // Llamamos a loadGrades() cuando el documento está listo
+    });
+
+    function applyFilter(grados) {
+        const nameFilter = $('#nameFilter').val().toLowerCase();
+        const nivelFilter = $('#nivelFilter').val().toLowerCase();
+        const seccionesFilter = $('#seccionesFilter').val().toLowerCase();
+    
+        const filteredGrados = grados.filter(grado => {
+            const matchesName = grado.nombre_grado.toLowerCase().includes(nameFilter);
+            const matchesNivel = grado.nivel_academico.toLowerCase().includes(nivelFilter);
+            const matchesSecciones = grado.secciones.toLowerCase().includes(seccionesFilter);
+    
+            return matchesName && matchesNivel && matchesSecciones;
+        });
+    
+        renderTable(filteredGrados);
+    }
+    function renderTable(grados) {
+        const tbody = $('#gradeTableBody');
+        tbody.empty();
+        grados.forEach(grado => {
+            const secciones = grado.secciones ? grado.secciones.replace(/,/g, ', ') : 'No hay secciones'; 
+            const row = `
+                <tr>
+                    <td>${grado.id_grado}</td>
+                    <td>${grado.nombre_grado}</td>
+                    <td>${grado.nivel_academico}</td>
+                    <td>${secciones}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editGrade(${grado.id_grado})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteGrade(${grado.id_grado})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+            tbody.append(row);
+        });
+    }    
+    $('#filterButton').on('click', function() {
+        loadGrades(); // Recarga los datos y aplica el filtro
+    });
+    $('#nameFilter, #nivelFilter, #seccionesFilter').on('input', function() {
+        loadGrades(); // Recarga los datos y aplica el filtro
+    });
+        
+</script>
+</body>
+</html>

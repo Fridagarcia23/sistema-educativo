@@ -1,7 +1,0 @@
-<!-- eliminar.ejs -->
-<h2>Eliminar Profesor</h2>
-<p>¿Estás seguro de querer eliminar al profesor <%= profesor.nombre %>?</p>
-<form action="/profesores/eliminar/<%= profesor.id %>?_method=DELETE" method="POST">
-    <button type="submit">Eliminar</button>
-    <a href="/profesores">Cancelar</a>
-</form>

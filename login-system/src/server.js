@@ -6,6 +6,7 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 const saltRounds = 10; // Número de rondas de sal para hashing
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
@@ -17,6 +18,9 @@ const methodOverride = require('method-override');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Configurar CORS
+app.use(cors());
 
 // Conexión a la base de datos MySQL
 const db = mysql.createConnection({
@@ -208,45 +212,66 @@ app.get('/dashboard-profesor', (req, res) => {
 app.post('/login-profesor', (req, res) => {
   const { email, contraseña } = req.body;
 
-  // Verifica si los datos están presentes
   if (!email || !contraseña) {
-      console.log(req.body); // Para depuración
-      return res.status(400).send('Todos los campos son requeridos');
+    req.session.error = 'Todos los campos son requeridos';
+    return res.redirect('/login-profesor');
   }
 
-  // SQL para obtener el usuario por email
-  const query = 'SELECT id_usuario, nombre_usuario, contraseña, rol FROM usuarios WHERE email = ? AND rol = "profesor"';
+  const query = 'SELECT id_usuario, nombre_usuario, contraseña, id_rol FROM usuarios WHERE email = ?';
   db.query(query, [email], (err, results) => {
+    if (err) {
+      console.error('Error en la consulta de usuario:', err);
+      req.session.error = 'Error en el servidor';
+      return res.redirect('/login-profesor');
+    }
+
+    if (results.length === 0) {
+      req.session.error = 'Email o contraseña incorrectos';
+      return res.redirect('/login-profesor');
+    }
+
+    const usuario = results[0];
+
+    bcrypt.compare(contraseña, usuario.contraseña, (err, result) => {
       if (err) {
-          console.error('Error al consultar el usuario:', err);
-          return res.status(500).send('Error en el servidor');
+        console.error('Error al comparar la contraseña:', err);
+        req.session.error = 'Error en el servidor';
+        return res.redirect('/login-profesor');
       }
 
-      if (results.length === 0) {
-          return res.status(401).send('Email o contraseña incorrectos');
+      if (!result) {
+        req.session.error = 'Email o contraseña incorrectos';
+        return res.redirect('/login-profesor');
       }
 
-      const usuario = results[0];
+      // Obtener el nombre del rol basado en el id_rol del usuario
+      const getRoleNameQuery = 'SELECT nombre_rol FROM roles WHERE id_rol = ?';
+      db.query(getRoleNameQuery, [usuario.id_rol], (err, roleResult) => {
+        if (err) {
+          console.error('Error al obtener el nombre del rol:', err);
+          req.session.error = 'Error en el servidor';
+          return res.redirect('/login-profesor');
+        }
 
-      // Compara la contraseña ingresada con el hash almacenado
-      bcrypt.compare(contraseña, usuario.contraseña, (err, result) => {
-          if (err) {
-              console.error('Error al comparar la contraseña:', err);
-              return res.status(500).send('Error en el servidor');
-          }
+        if (roleResult.length === 0) {
+          req.session.error = 'Rol no encontrado';
+          return res.redirect('/login-profesor');
+        }
 
-          if (!result) {
-              return res.status(401).send('Email o contraseña incorrectos');
-          }
+        req.session.user = {
+          id_usuario: usuario.id_usuario,
+          nombre_usuario: usuario.nombre_usuario,
+          rol: roleResult[0].nombre_rol
+        };
 
-          // Manejo del inicio de sesión del profesor
-          req.session.user = usuario;
-          res.redirect('/dashboard-profesor'); // Redirige al dashboard del profesor
+        req.session.success = 'Bienvenido, has iniciado sesión exitosamente';
+        res.redirect('/dashboard-profesor'); // Redirige a la página de inicio para profesores
       });
+    });
   });
 });
 
-// Ruta para mostrar la página de gestión de usuarios
+// modulo usuarios
 // Ruta para obtener usuarios con paginación
 app.get('/api/usuarios', (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -341,17 +366,369 @@ app.delete('/api/usuarios/:id', (req, res) => {
   });
 });
 
-// Rutas para manejar las solicitudes
-app.post('/api/usuarios', upload.single('foto'), (req, res) => {
-  // Código para crear un nuevo usuario
-});
-
-app.put('/api/usuarios/:id', upload.single('foto'), (req, res) => {
-  // Código para actualizar un usuario existente
-});
-
 // Configuración de la carpeta de uploads
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+
+//modulo de grados
+// Ruta para obtener todos los grados
+app.get('/api/grados', (req, res) => {
+  db.query('SELECT * FROM grados', (err, grados) => {
+      if (err) {
+          console.error('Error al obtener grados:', err);
+          return res.status(500).json({ success: false });
+      }
+
+      const gradoPromises = grados.map(grado =>
+          new Promise((resolve, reject) => {
+              db.query('SELECT nombre_seccion FROM secciones WHERE id_grado = ?', [grado.id_grado], (err, secciones) => {
+                  if (err) {
+                      reject(err);
+                  } else {
+                      grado.secciones = secciones.map(seccion => seccion.nombre_seccion).join(', ');
+                      resolve(grado);
+                  }
+              });
+          })
+      );
+
+      Promise.all(gradoPromises)
+          .then(result => res.json(result))
+          .catch(err => {
+              console.error('Error al obtener secciones:', err);
+              res.status(500).json({ success: false });
+          });
+  });
+});
+
+// Ruta para obtener un grado específico por ID
+app.get('/api/grados/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM grados WHERE id_grado = ?', [id], (err, grados) => {
+      if (err) {
+          console.error('Error al obtener grado:', err);
+          return res.status(500).json({ success: false });
+      }
+
+      if (grados.length === 0) {
+          return res.status(404).json({ success: false, message: 'Grado no encontrado' });
+      }
+
+      const grado = grados[0];
+
+      db.query('SELECT nombre_seccion FROM secciones WHERE id_grado = ?', [id], (err, secciones) => {
+          if (err) {
+              console.error('Error al obtener secciones:', err);
+              return res.status(500).json({ success: false });
+          }
+
+          grado.secciones = secciones.map(seccion => seccion.nombre_seccion).join(', ');
+          res.json(grado);
+      });
+  });
+});
+
+
+
+// Crear grado
+app.post('/api/grados/create', (req, res) => {
+  const { nombre_grado, nivel_academico, secciones } = req.body;
+
+  db.query('INSERT INTO grados (nombre_grado, nivel_academico) VALUES (?, ?)', 
+    [nombre_grado, nivel_academico], 
+    (err, result) => {
+        if (err) {
+            console.error('Error al insertar el grado:', err);
+            return res.status(500).json({ success: false });
+        }
+
+        const id_grado = result.insertId; // Obtener el ID del nuevo grado
+
+        // Verificar y convertir `secciones` a un array si es necesario
+        let seccionesArray = [];
+        if (Array.isArray(secciones)) {
+            seccionesArray = secciones;
+        } else if (typeof secciones === 'string') {
+            seccionesArray = secciones.split(',').map(s => s.trim());
+        }
+
+        // Insertar secciones asociadas
+        if (seccionesArray.length > 0) {
+            const sectionQueries = seccionesArray.map(seccion => 
+                new Promise((resolve, reject) => {
+                    db.query('INSERT INTO secciones (id_grado, nombre_seccion) VALUES (?, ?)', 
+                        [id_grado, seccion], 
+                        (err) => {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        }
+                    );
+                })
+            );
+
+            Promise.all(sectionQueries)
+                .then(() => res.json({ success: true }))
+                .catch(err => {
+                    console.error('Error al insertar secciones:', err);
+                    res.status(500).json({ success: false });
+                });
+        } else {
+            res.json({ success: true });
+        }
+    }
+);
+});
+
+// Actualizar grado
+app.post('/api/grados/update', (req, res) => {
+  const { id_grado, nombre_grado, nivel_academico, secciones } = req.body;
+
+  db.query('UPDATE grados SET nombre_grado = ?, nivel_academico = ? WHERE id_grado = ?', 
+      [nombre_grado, nivel_academico, id_grado], 
+      (err) => {
+          if (err) {
+              console.error('Error al actualizar el grado:', err);
+              return res.status(500).json({ success: false });
+          }
+
+          // Eliminar secciones antiguas y añadir nuevas
+          db.query('DELETE FROM secciones WHERE id_grado = ?', [id_grado], (err) => {
+              if (err) {
+                  console.error('Error al eliminar secciones:', err);
+                  return res.status(500).json({ success: false });
+              }
+
+              // Verifica si secciones está definido y es una cadena
+              let seccionesArray = [];
+              if (typeof secciones === 'string') {
+                  seccionesArray = secciones.split(',').map(s => s.trim());
+              } else if (Array.isArray(secciones)) {
+                  seccionesArray = secciones;
+              }
+
+              if (seccionesArray.length > 0) {
+                  const sectionQueries = seccionesArray.map(seccion => 
+                      new Promise((resolve, reject) => {
+                          db.query('INSERT INTO secciones (id_grado, nombre_seccion) VALUES (?, ?)', 
+                              [id_grado, seccion], 
+                              (err) => {
+                                  if (err) {
+                                      reject(err);
+                                  } else {
+                                      resolve();
+                                  }
+                              }
+                          );
+                      })
+                  );
+
+                  Promise.all(sectionQueries)
+                      .then(() => res.json({ success: true }))
+                      .catch(err => {
+                          console.error('Error al insertar secciones:', err);
+                          res.status(500).json({ success: false });
+                      });
+              } else {
+                  res.json({ success: true });
+              }
+          });
+      }
+  );
+});
+app.post('/api/grados/delete', (req, res) => {
+  const { id_grado } = req.body;
+
+  db.query('DELETE FROM grados WHERE id_grado = ?', [id_grado], (err) => {
+      if (err) {
+          console.error('Error al eliminar el grado:', err);
+          return res.status(500).json({ success: false });
+      }
+
+      db.query('DELETE FROM secciones WHERE id_grado = ?', [id_grado], (err) => {
+          if (err) {
+              console.error('Error al eliminar secciones:', err);
+              return res.status(500).json({ success: false });
+          }
+          res.json({ success: true });
+      });
+  });
+});
+
+//modulo alumnos
+// Ruta para obtener todos los estudiantes con grados, secciones y año escolar
+app.get('/api/estudiantes', (req, res) => {
+  const query = `
+    SELECT 
+      e.id_estudiante,
+      e.nombre,
+      e.email,
+      e.fecha_nacimiento,
+      e.direccion,
+      e.telefono,
+      g.nombre_grado,
+      s.nombre_seccion,
+      eg.anio_escolar
+    FROM estudiantes e
+    JOIN estudiantes_grados eg ON e.id_estudiante = eg.id_estudiante
+    JOIN grados g ON eg.id_grado = g.id_grado
+    JOIN secciones s ON eg.id_seccion = s.id_seccion
+    ORDER BY e.id_estudiante ASC;  -- Agregar ORDER BY aquí
+  `;
+
+  db.query(query, (err, estudiantes) => {
+    if (err) {
+      console.error('Error al obtener estudiantes:', err);
+      return res.status(500).json({ success: false });
+    }
+    res.json(estudiantes);
+  });
+});
+
+// Ruta para obtener un estudiante específico por ID
+app.get('/api/estudiantes/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM estudiantes WHERE id_estudiante = ?', [id], (err, estudiantes) => {
+    if (err) {
+      console.error('Error al obtener estudiante:', err);
+      return res.status(500).json({ success: false });
+    }
+
+    if (estudiantes.length === 0) {
+      return res.status(404).json({ success: false, message: 'Estudiante no encontrado' });
+    }
+
+    res.json(estudiantes[0]);
+  });
+});
+
+// Crear estudiante
+// Ruta para agregar un estudiante
+app.post('/estudiantes', (req, res) => {
+  const { nombre, email, fecha_nacimiento, direccion, telefono, grado, seccion_modal, anio_escolar } = req.body;
+
+  // Verifica los datos recibidos
+  console.log('Datos recibidos:', { nombre, email, fecha_nacimiento, direccion, telefono, grado, seccion_modal, anio_escolar });
+
+  // Primero, inserta el estudiante en la tabla 'estudiantes'
+  const queryEstudiantes = `INSERT INTO estudiantes (nombre, email, fecha_nacimiento, direccion, telefono) VALUES (?, ?, ?, ?, ?)`;
+
+  db.query(queryEstudiantes, [nombre, email, fecha_nacimiento, direccion, telefono], (error, results) => {
+    if (error) {
+      console.error('Error al insertar el estudiante:', error);
+      return res.status(500).send('Error al insertar el estudiante');
+    }
+
+    // Obtén el ID del estudiante recién insertado
+    const id_estudiante = results.insertId;
+
+    // Luego, inserta los datos en la tabla 'estudiantes_grados'
+    const queryEstudiantesGrados = `INSERT INTO estudiantes_grados (id_estudiante, id_grado, id_seccion, anio_escolar) VALUES (?, ?, ?, ?)`;
+
+    db.query(queryEstudiantesGrados, [id_estudiante, grado, seccion_modal, anio_escolar], (error) => {
+      if (error) {
+        console.error('Error al insertar en estudiantes_grados:', error);
+        return res.status(500).send('Error al insertar en estudiantes_grados');
+      }
+
+      // Envía una respuesta adecuada
+      res.json({ success: true, message: 'Estudiante agregado exitosamente' });
+    });
+  });
+});
+
+// Ruta para actualizar un estudiante
+app.put('/api/estudiantes/:id', (req, res) => {
+  const id_estudiante = req.params.id;
+  const { nombre, email, fecha_nacimiento, direccion, telefono, grado, seccion, anio_escolar } = req.body;
+
+  if (!nombre || !email || !fecha_nacimiento || !direccion || !telefono || !grado || !seccion || !anio_escolar) {
+    console.log('Datos incompletos');
+    return res.status(400).json({ success: false, message: 'Todos los campos son requeridos.' });
+  }
+
+  const query = `
+    UPDATE estudiantes
+    SET nombre = ?, email = ?, fecha_nacimiento = ?, direccion = ?, telefono = ?, grado = ?, seccion = ?, anio_escolar = ?
+    WHERE id_estudiante = ?
+  `;
+
+  const values = [nombre, email, fecha_nacimiento, direccion, telefono, grado, seccion, anio_escolar, id_estudiante];
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.error('Error al actualizar el estudiante:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+
+    if (results.affectedRows === 0) {
+      console.log('Estudiante no encontrado');
+      return res.status(404).json({ success: false, message: 'Estudiante no encontrado' });
+    }
+
+    console.log('Estudiante actualizado correctamente');
+    res.json({ success: true, message: 'Estudiante actualizado correctamente.' });
+  });
+});
+
+// Eliminar estudiante
+app.post('/api/estudiantes/delete', (req, res) => {
+  const { id_estudiante } = req.body;
+
+  db.query('DELETE FROM estudiantes WHERE id_estudiante = ?', [id_estudiante], (err) => {
+    if (err) {
+      console.error('Error al eliminar el estudiante:', err);
+      return res.status(500).json({ success: false });
+    }
+
+    res.json({ success: true });
+  });
+});
+
+// API para Grados
+// Ruta para obtener los grados
+app.get('/api/grados', async (req, res) => {
+  try {
+    const [grados] = await db.query('SELECT * FROM grados');
+    res.json(grados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener los grados' });
+  }
+});
+
+// Ruta para obtener secciones
+app.get('/api/secciones', (req, res) => {
+  const gradoId = req.query.grado;
+
+  // Consulta para obtener secciones basadas en el grado
+  const query = gradoId ? 'SELECT * FROM secciones WHERE id_grado = ?' : 'SELECT * FROM secciones';
+  const params = gradoId ? [gradoId] : [];
+
+  db.query(query, params, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Error al obtener las secciones' });
+    }
+    res.json(results);
+  });
+});
+
+
+
+
+// Ruta para mostrar la vista de alumnos
+app.get('/alumnos', async (req, res) => {
+  try {
+    // Reemplaza esta línea con la lógica para obtener los estudiantes desde tu base de datos
+    const estudiantes = await db.query('SELECT * FROM estudiantes');
+    res.render('alumnos/index', { estudiantes });
+  } catch (error) {
+    console.error('Error al obtener estudiantes:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+});
 
 // Rutas
 const authRouter = require('./routes/auth');
@@ -363,6 +740,15 @@ app.use('/profesores', cursosRouter);
 
 app.get('/roles', (req, res) => {
   res.render('roles');
+});
+
+// Ruta para profesor
+app.get('/profesores', (req, res) => {
+  res.render('profesores/index'); // Renderiza la vista basico.ejs en la carpeta grados
+});
+
+app.get('/grados', (req, res) => {
+  res.render('grados/index');  // Asegúrate de usar 'grados/index' si la carpeta es 'grados'
 });
 
 app.get('/usuarios', (req, res) => {
