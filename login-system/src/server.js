@@ -370,6 +370,8 @@ app.delete('/api/usuarios/:id', (req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
 //modulo de grados
+
+//modulo de grados
 // Ruta para obtener todos los grados
 app.get('/api/grados', (req, res) => {
   db.query('SELECT * FROM grados', (err, grados) => {
@@ -426,7 +428,6 @@ app.get('/api/grados/:id', (req, res) => {
       });
   });
 });
-
 
 
 // Crear grado
@@ -556,165 +557,91 @@ app.post('/api/grados/delete', (req, res) => {
   });
 });
 
-//modulo alumnos
-// Ruta para obtener todos los estudiantes con grados, secciones y año escolar
-app.get('/api/estudiantes', (req, res) => {
-  const query = `
-    SELECT 
-      e.id_estudiante,
-      e.nombre,
-      e.email,
-      e.fecha_nacimiento,
-      e.direccion,
-      e.telefono,
-      g.nombre_grado,
-      s.nombre_seccion,
-      eg.anio_escolar
-    FROM estudiantes e
-    JOIN estudiantes_grados eg ON e.id_estudiante = eg.id_estudiante
-    JOIN grados g ON eg.id_grado = g.id_grado
-    JOIN secciones s ON eg.id_seccion = s.id_seccion
-    ORDER BY e.id_estudiante ASC;  -- Agregar ORDER BY aquí
-  `;
 
-  db.query(query, (err, estudiantes) => {
-    if (err) {
-      console.error('Error al obtener estudiantes:', err);
-      return res.status(500).json({ success: false });
-    }
-    res.json(estudiantes);
-  });
-});
+// Módulo alumnos
 
-// Ruta para obtener un estudiante específico por ID
-app.get('/api/estudiantes/:id', (req, res) => {
-  const { id } = req.params;
-  db.query('SELECT * FROM estudiantes WHERE id_estudiante = ?', [id], (err, estudiantes) => {
-    if (err) {
-      console.error('Error al obtener estudiante:', err);
-      return res.status(500).json({ success: false });
-    }
-
-    if (estudiantes.length === 0) {
-      return res.status(404).json({ success: false, message: 'Estudiante no encontrado' });
-    }
-
-    res.json(estudiantes[0]);
-  });
-});
-
-// Crear estudiante
-// Ruta para agregar un estudiante
-app.post('/estudiantes', (req, res) => {
-  const { nombre, email, fecha_nacimiento, direccion, telefono, grado, seccion_modal, anio_escolar } = req.body;
-
-  // Verifica los datos recibidos
-  console.log('Datos recibidos:', { nombre, email, fecha_nacimiento, direccion, telefono, grado, seccion_modal, anio_escolar });
-
-  // Primero, inserta el estudiante en la tabla 'estudiantes'
-  const queryEstudiantes = `INSERT INTO estudiantes (nombre, email, fecha_nacimiento, direccion, telefono) VALUES (?, ?, ?, ?, ?)`;
-
-  db.query(queryEstudiantes, [nombre, email, fecha_nacimiento, direccion, telefono], (error, results) => {
-    if (error) {
-      console.error('Error al insertar el estudiante:', error);
-      return res.status(500).send('Error al insertar el estudiante');
-    }
-
-    // Obtén el ID del estudiante recién insertado
-    const id_estudiante = results.insertId;
-
-    // Luego, inserta los datos en la tabla 'estudiantes_grados'
-    const queryEstudiantesGrados = `INSERT INTO estudiantes_grados (id_estudiante, id_grado, id_seccion, anio_escolar) VALUES (?, ?, ?, ?)`;
-
-    db.query(queryEstudiantesGrados, [id_estudiante, grado, seccion_modal, anio_escolar], (error) => {
-      if (error) {
-        console.error('Error al insertar en estudiantes_grados:', error);
-        return res.status(500).send('Error al insertar en estudiantes_grados');
+// Ruta para obtener los datos de alumnos en formato JSON
+app.get('/api/alumnos', (req, res) => {
+  db.query('SELECT * FROM alumnos', (err, results) => {
+      if (err) {
+          console.error(err);
+          res.status(500).send('Error al obtener los alumnos');
+          return;
       }
-
-      // Envía una respuesta adecuada
-      res.json({ success: true, message: 'Estudiante agregado exitosamente' });
-    });
+      res.json(results); // Retorna los resultados como JSON
+  });
+});
+// Agregar un nuevo alumno
+// Agregar un nuevo alumno
+app.post('/alumnos', (req, res) => {
+  const { nombre, apellido, grado, email, seccion, estado } = req.body;
+  db.query('INSERT INTO alumnos (nombre, apellido, grado, email, seccion, estado) VALUES (?, ?, ?, ?, ?, ?)', [nombre, apellido, grado, email, seccion, estado], (err, result) => {
+      if (err) throw err;
+      res.redirect('alumnos/index');
   });
 });
 
-// Ruta para actualizar un estudiante
-app.put('/api/estudiantes/:id', (req, res) => {
-  const id_estudiante = req.params.id;
-  const { nombre, email, fecha_nacimiento, direccion, telefono, grado, seccion, anio_escolar } = req.body;
-
-  if (!nombre || !email || !fecha_nacimiento || !direccion || !telefono || !grado || !seccion || !anio_escolar) {
-    console.log('Datos incompletos');
-    return res.status(400).json({ success: false, message: 'Todos los campos son requeridos.' });
-  }
-
-  const query = `
-    UPDATE estudiantes
-    SET nombre = ?, email = ?, fecha_nacimiento = ?, direccion = ?, telefono = ?, grado = ?, seccion = ?, anio_escolar = ?
-    WHERE id_estudiante = ?
-  `;
-
-  const values = [nombre, email, fecha_nacimiento, direccion, telefono, grado, seccion, anio_escolar, id_estudiante];
-
-  db.query(query, values, (err, results) => {
-    if (err) {
-      console.error('Error al actualizar el estudiante:', err);
-      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
-    }
-
-    if (results.affectedRows === 0) {
-      console.log('Estudiante no encontrado');
-      return res.status(404).json({ success: false, message: 'Estudiante no encontrado' });
-    }
-
-    console.log('Estudiante actualizado correctamente');
-    res.json({ success: true, message: 'Estudiante actualizado correctamente.' });
+// Ruta para obtener las secciones
+app.get('/secciones', (req, res) => {
+  db.query('SELECT id_seccion, nombre_seccion FROM secciones', (error, results) => {
+      if (error) {
+          return res.status(500).json({ error: 'Error al obtener secciones' });
+      }
+      res.json(results);
   });
 });
 
-// Eliminar estudiante
-app.post('/api/estudiantes/delete', (req, res) => {
-  const { id_estudiante } = req.body;
-
-  db.query('DELETE FROM estudiantes WHERE id_estudiante = ?', [id_estudiante], (err) => {
-    if (err) {
-      console.error('Error al eliminar el estudiante:', err);
-      return res.status(500).json({ success: false });
-    }
-
-    res.json({ success: true });
+// Editar un alumno
+app.get('/alumnos/edit/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM alumnos WHERE id_alumno = ?', [id], (err, results) => {
+      if (err) throw err;
+      res.render('alumnos/edit', { alumno: results[0] }); // Asegúrate de que la vista sea correcta
   });
 });
 
-// API para Grados
 // Ruta para obtener los grados
-app.get('/api/grados', async (req, res) => {
-  try {
-    const [grados] = await db.query('SELECT * FROM grados');
-    res.json(grados);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener los grados' });
-  }
-});
-
-// Ruta para obtener secciones
-app.get('/api/secciones', (req, res) => {
-  const gradoId = req.query.grado;
-
-  // Consulta para obtener secciones basadas en el grado
-  const query = gradoId ? 'SELECT * FROM secciones WHERE id_grado = ?' : 'SELECT * FROM secciones';
-  const params = gradoId ? [gradoId] : [];
-
-  db.query(query, params, (error, results) => {
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ error: 'Error al obtener las secciones' });
-    }
-    res.json(results);
+app.get('/grados', (req, res) => {
+  const query = 'SELECT * FROM grados';
+  db.query(query, (err, results) => {
+      if (err) {
+          console.error(err);
+          res.status(500).send('Error al obtener los grados');
+          return;
+      }
+      res.json(results);
   });
 });
 
+// Actualizar un alumno
+// Actualizar un alumno
+app.put('/alumnos/:id', (req, res) => {
+  const { id } = req.params;
+  const { nombre, apellido, grado, email, seccion, estado, telefono, fecha_nacimiento } = req.body;
+
+  db.query('UPDATE alumnos SET nombre = ?, apellido = ?, grado = ?, email = ?, seccion = ?, estado = ?, telefono = ?, fecha_nacimiento = ? WHERE id_alumno = ?', 
+      [nombre, apellido, grado, email, seccion, estado, telefono, fecha_nacimiento, id], 
+      (err, result) => {
+          if (err) {
+              console.error('Error al actualizar el alumno:', err);
+              return res.status(500).send('Error al actualizar el alumno.');
+          }
+          res.json({ message: 'Alumno actualizado con éxito.' }); // Respuesta en JSON
+      }
+  );
+});
+
+// Eliminar un alumno
+app.delete('/alumnos/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM alumnos WHERE id_alumno = ?', [id], (err, result) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'Error al eliminar el alumno' });
+      }
+      res.redirect('/alumnos');
+  });
+});
 
 
 
@@ -730,30 +657,31 @@ app.get('/alumnos', async (req, res) => {
   }
 });
 
+
 // Rutas
 const authRouter = require('./routes/auth');
 const cursosRouter = require('./routes/cursos'); // Asegúrate de tener este require
 app.use('/', authRouter);
-app.use('/estudiantes', estudiantesRouter);
 app.use('/cursos', cursosRouter);
 app.use('/profesores', cursosRouter);
 
 app.get('/roles', (req, res) => {
   res.render('roles');
 });
-
 // Ruta para profesor
 app.get('/profesores', (req, res) => {
   res.render('profesores/index'); // Renderiza la vista basico.ejs en la carpeta grados
+});
+
+app.get('/usuarios', (req, res) => {
+  res.render('usuarios/index'); // Solo renderiza el contenido del CRUD
 });
 
 app.get('/grados', (req, res) => {
   res.render('grados/index');  // Asegúrate de usar 'grados/index' si la carpeta es 'grados'
 });
 
-app.get('/usuarios', (req, res) => {
-  res.render('usuarios/index'); // Solo renderiza el contenido del CRUD
-});
+
 
 app.get('/login-profesor', (req, res) => {
   res.render('profesores/login-profesor');

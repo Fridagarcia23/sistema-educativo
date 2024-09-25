@@ -94,10 +94,8 @@
             margin-right: 15px;
         }
         .header h1 {
-            font-weight: 800;
+            font-weight: 600;
             font-size: 1.8em;
-            text-align: center; /* Asegura que el texto esté centrado dentro de su contenedor */
-            margin: 0 auto; /* Centra el título dentro de su contenedor */
         }
         .profile-header {
             display: flex;
@@ -228,34 +226,6 @@
             cursor: pointer;
             z-index: 1001;
         }
-        
-        /* Estilos adicionales para el submenú */
-        .submenu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: none;
-            background-color: #2a2d34;
-        }
-        .submenu li {
-            padding: 0;
-        }
-        .submenu a {
-            padding: 10px 15px;
-            color: #fff;
-            text-decoration: none;
-            display: block;
-        }
-        .submenu a:hover {
-            background-color: #3e4149;
-        }
-        .submenu.show {
-            display: block;
-        }
-        .dropdown-arrow {
-            float: right;
-            margin-left: auto;
-        }
     </style>
 </head>
 <body>
@@ -264,7 +234,7 @@
             <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li><a href="/usuarios"><i class="fas fa-users"></i> Usuarios</a></li>
             <li><a href="/grados"><i class="fas fa-graduation-cap"></i> Grados</a></li>
-            <li><a href="/alumnos"><i class="fas fa-user-graduate"></i> Alumnos</a></li>
+            <li><a href="/alumnos"><i class="fas fa-user-graduate"></i> Alumnos</a></li>            
             <li><a href="/profesores"><i class="fas fa-chalkboard-teacher"></i> Profesores</a></li>
             <li><a href="/reportes"><i class="fas fa-chart-bar"></i> Reportes</a></li>
             <li><a href="/asistencia"><i class="fas fa-user-check"></i> Asistencia</a></li>
@@ -281,10 +251,47 @@
             <img src="/img/home.jpg" alt="Logo">
         </div>
         <h1>CENTRO ESCOLAR CECEC</h1>
+        <div class="profile-header">
+            <img src="<%= user.profilePicture %>" alt="Foto de Perfil" class="profile-picture">
+            <div class="profile-info">
+                <div class="name"><%= user.nombre_usuario %></div>
+                <div class="role"><%= user.rol %></div>
+            </div>
+            <!-- Menú desplegable dentro de profile-header -->
+            <div class="dropdown-menu">
+                <a href="#"><i class="fas fa-user"></i> Perfil</a>
+                <a href="#"><i class="fas fa-cogs"></i> Configuración</a>
+                <a href="#"><i class="fas fa-sign-out-alt"></i> Salir</a>
+            </div>
+        </div>
     </header>
-    <script>
-        
-
-    </script>
+    
+    <div class="dashboard-container">
+        <div class="modules-container">
+            <div id="history-content" style="margin-top: 10px; text-align: center;">
+                <h2 style="font-size: 2em; font-weight: 600;">Nuestra Historia</h2>
+                <div style="max-width: 800px; margin: 0 auto; text-align: justify; font-size: 1.1em; line-height: 1.8;">
+                    <p>
+                        La Escuela de Cristo se estableció hace diez años con la intención de brindar a los niños y jóvenes de la comunidad de Villa Nueva, Guatemala, una educación completa y de alta calidad. La necesidad de una institución educativa que combinara la excelencia académica con un enfoque en el desarrollo integral de los estudiantes fue lo que llevó a la fundación de la escuela.
+                    </p>
+                    <p>
+                        La Escuela de Cristo comenzó con el objetivo de establecer una base sólida, desarrollando un currículo académico que incluía tanto materias básicas como programas adicionales de formación en valores y habilidades sociales. La institución se destacó por su enfoque en la educación individualizada y el apoyo constante a todos los estudiantes.
+                    </p>
+                    <p>
+                        La escuela ha experimentado un crecimiento significativo tanto en el número de estudiantes como en la calidad de las instalaciones. Las instalaciones se ampliaron para incluir una cancha deportiva para aumentar la actividad física y el espíritu deportivo. Además, se inauguró una cafetería para ofrecer un servicio de alimentación que apoya el bienestar general de la comunidad escolar y fomenta una dieta saludable.
+                    </p>
+                    <p>
+                        A pesar de estos avances, la gestión administrativa de la escuela, en particular la gestión de datos de los estudiantes y la generación de recibos, sigue siendo principalmente manual. Esto ha generado problemas en términos de eficiencia y precisión, lo que ha llevado a la adopción de un sistema digital para modernizar estos procesos.
+                    </p>
+                    <p>
+                        El objetivo del proyecto de implementación del nuevo sistema de gestión de datos es resolver estos problemas, mejorar la gestión de la información y aumentar la eficiencia operativa. La misión de la Escuela de Cristo de brindar una educación de alta calidad, adaptándola a las necesidades actuales y preparando a sus estudiantes para un futuro próspero sigue siendo un compromiso.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        © 2024 ING. Frida Berlinda Garcia
+    </div>
 </body>
 </html>

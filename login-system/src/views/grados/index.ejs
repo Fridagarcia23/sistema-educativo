@@ -635,6 +635,11 @@ $('#editGradeForm').on('submit', function(e) {
         loadGrades(); // Llamamos a loadGrades() cuando el documento está listo
     });
 
+    
+    function inscribir(idGrado) {
+        window.location.href = `/inscripcion/${idGrado}`;
+    }
+    
     function applyFilter(grados) {
         const nameFilter = $('#nameFilter').val().toLowerCase();
         const nivelFilter = $('#nivelFilter').val().toLowerCase();

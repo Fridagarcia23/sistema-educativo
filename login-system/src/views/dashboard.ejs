@@ -227,6 +227,33 @@
             z-index: 1001;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-links a');
+    
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault(); // Evita el comportamiento por defecto del enlace
+                    const url = this.getAttribute('href'); // Obtiene la URL del enlace
+    
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error en la red');
+                            }
+                            return response.text(); // Obtiene la respuesta como texto
+                        })
+                        .then(data => {
+                            document.getElementById('content').innerHTML = data; // Carga el contenido en el div
+                        })
+                        .catch(error => {
+                            console.error('Error al cargar el contenido:', error);
+                        });
+                });
+            });
+        });
+    </script>
+    
 </head>
 <body>
     <nav class="sidebar">
