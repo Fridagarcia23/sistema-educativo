@@ -1,557 +1,560 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión de Estudiantes</title>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  
-  <style>
-    /* Estilos de los mensajes emergentes */
-#messageBox {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1050;
-  width: 300px;
-}
-    .pagination {
-      display: flex;
-      list-style: none;
-    }
+    <meta charset="UTF-8">
+    <title>Gestión de Alumnos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
     
-    .pagination li {
-      margin: 0 5px;
-    }
+        button:hover {
+            background-color: #45a049;
+        }
+        
+    </style>
     
-    .pagination button {
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      background-color: white;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    
-    .pagination button:hover {
-      background-color: #f0f0f0;
-    }
-    
-    .pagination button.active {
-      background-color: #007bff;
-      color: white;
-      border-color: #007bff;
-    }
-    
-    .pagination button.disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
-    
-  </style>
 </head>
 <body>
-  <div class="container mt-4">
-    <h1>Gestión de Estudiantes</h1>
-    <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalAgregarEstudiante">Agregar Estudiante</button>
-
-    <!-- Tabla para listar estudiantes -->
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Fecha de Nacimiento</th>
-          <th>Dirección</th>
-          <th>Teléfono</th>
-          <th>Grado</th>
-          <th>Sección</th>
-          <th>Año Escolar</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tablaEstudiantes">
-        <!-- Las filas se llenarán dinámicamente aquí -->
-      </tbody>
-    </table>
-    <!-- Paginación -->
-    <nav aria-label="Page navigation">
-      <ul class="pagination justify-content-end" id="pagination">
-          <!-- Los botones de paginación se cargarán aquí -->
-      </ul>
-  </nav>
-
-  </div>
-
- <!-- Modal de Agregar Estudiante -->
-<div class="modal fade" id="modalAgregarEstudiante" tabindex="-1" role="dialog" aria-labelledby="modalAgregarEstudianteLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalAgregarEstudianteLabel">Agregar Estudiante</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="formAgregarEstudiante">
-          <!-- Datos del Alumno -->
-          <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-          </div>
-          <div class="form-group">
-            <label for="fecha_nacimiento">Fecha de Nacimiento</label>
-            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
-          </div>
-          <div class="form-group">
-            <label for="direccion">Dirección</label>
-            <textarea class="form-control" id="direccion" name="direccion" rows="3" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="telefono">Teléfono</label>
-            <input type="text" class="form-control" id="telefono" name="telefono" required>
-          </div>
-          <div class="form-group">
-            <label for="grado">Grado</label>
-            <select class="form-control" id="grado" name="grado" required>
-              <option value="">Seleccione un grado</option>
-              <!-- Opciones se llenarán dinámicamente -->
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="seccion_modal">Sección</label>
-            <select class="form-control" id="seccion_modal" name="seccion_modal" required>
-              <option value="">Seleccione una sección</option>
-              <!-- Opciones se llenarán dinámicamente -->
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="anio_escolar">Año Escolar</label>
-            <input type="number" class="form-control" id="anio_escolar" name="anio_escolar" required>
-          </div>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-primary">Agregar Estudiante</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- Modal de Editar Estudiante -->
-<div class="modal fade" id="modalEditarEstudiante" tabindex="-1" role="dialog" aria-labelledby="modalEditarEstudianteLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalEditarEstudianteLabel">Editar Estudiante</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="formEditarEstudiante">
-          <!-- Campo oculto para el ID del estudiante -->
-          <input type="hidden" id="id_estudiante_edit" name="id_estudiante">
-
-          <!-- Datos del Estudiante -->
-          <div class="form-group">
-            <label for="nombre_edit">Nombre</label>
-            <input type="text" class="form-control" id="nombre_edit" name="nombre_edit" required>
-          </div>
-          <div class="form-group">
-            <label for="email_edit">Email</label>
-            <input type="email" class="form-control" id="email_edit" name="email_edit" required>
-          </div>
-          <div class="form-group">
-            <label for="fecha_nacimiento_edit">Fecha de Nacimiento</label>
-            <input type="date" class="form-control" id="fecha_nacimiento_edit" name="fecha_nacimiento_edit" required>
-          </div>
-          <div class="form-group">
-            <label for="direccion_edit">Dirección</label>
-            <textarea class="form-control" id="direccion_edit" name="direccion_edit" rows="3" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="telefono_edit">Teléfono</label>
-            <input type="text" class="form-control" id="telefono_edit" name="telefono_edit" required>
-          </div>
-          <div class="form-group">
-            <label for="grado_edit">Grado</label>
-            <select class="form-control" id="grado_edit" name="grado_edit" required>
-              <option value="">Seleccione un grado</option>
-              <!-- Opciones se llenarán dinámicamente -->
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="seccion_edit_modal">Sección</label>
-            <select class="form-control" id="seccion_edit_modal" name="seccion_edit_modal" required>
-              <option value="">Seleccione una sección</option>
-              <!-- Opciones se llenarán dinámicamente -->
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="anio_escolar_edit">Año Escolar</label>
-            <input type="number" class="form-control" id="anio_escolar_edit" name="anio_escolar_edit" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- Añade esto para mostrar mensajes -->
-<div id="messageBox" class="alert" style="display:none;"></div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <script>
-    function showMessage(type, message) {
-      const messageBox = document.getElementById('messageBox');
-      messageBox.className = `alert alert-${type}`;
-      messageBox.innerText = message;
-      messageBox.style.display = 'block'; // Muestra el mensaje
-      setTimeout(() => messageBox.style.display = 'none', 3000); // Oculta el mensaje después de 3 segundos
-  }
-    document.addEventListener('DOMContentLoaded', () => {
-      const estudiantesPorPagina = 10;
-  let estudiantes = [];
-  let paginaActual = 1;
-
-  async function cargarEstudiantes() {
-    try {
-      const response = await fetch('/api/estudiantes');
-      if (!response.ok) throw new Error('Error en la respuesta de la API');
-      
-      estudiantes = await response.json();
-      console.log('Estudiantes cargados:', estudiantes);
-      
-      mostrarPagina(paginaActual);
-      crearBotonesDePaginacion();
-    } catch (error) {
-      console.error('Error al cargar estudiantes:', error);
-    }
-  }
-
-  // Mostrar el modal con los datos del estudiante
-  function abrirModalEditar(estudiante) {
-    document.getElementById('id_estudiante_edit').value = estudiante.id;
-    document.getElementById('nombre_edit').value = estudiante.nombre;
-    document.getElementById('email_edit').value = estudiante.email;
-    document.getElementById('fecha_nacimiento_edit').value = estudiante.fecha_nacimiento;
-    document.getElementById('direccion_edit').value = estudiante.direccion;
-    document.getElementById('telefono_edit').value = estudiante.telefono;
-    document.getElementById('anio_escolar_edit').value = estudiante.anio_escolar;
-  
-    // Cargar grados y secciones
-    cargarGrados().then(() => {
-      document.getElementById('grado_edit').value = estudiante.grado_id; // Valor actual del grado
-      cargarSecciones(estudiante.grado_id, estudiante.seccion_id); // Cargar secciones para el grado actual
-      document.getElementById('seccion_edit_modal').value = estudiante.seccion_id; // Valor actual de la sección
-    });
-  
-    $('#modalEditarEstudiante').modal('show');
-  }
-
-// Enviar los datos del formulario de edición al servidor
-document.getElementById('formEditarEstudiante').addEventListener('submit', function(event) {
-  event.preventDefault(); // Prevenir el envío del formulario por defecto
-
-  const id_estudiante = document.getElementById('id_estudiante_edit').value;
-  const nombre = document.getElementById('nombre_edit').value;
-  const email = document.getElementById('email_edit').value;
-  const fecha_nacimiento = document.getElementById('fecha_nacimiento_edit').value;
-  const direccion = document.getElementById('direccion_edit').value;
-  const telefono = document.getElementById('telefono_edit').value;
-  const grado = document.getElementById('grado_edit').value;
-  const seccion = document.getElementById('seccion_edit_modal').value;
-  const anio_escolar = document.getElementById('anio_escolar_edit').value;
-
-  const estudiante = {
-    nombre,
-    email,
-    fecha_nacimiento,
-    direccion,
-    telefono,
-    grado,
-    seccion,
-    anio_escolar
-  };
-
-  fetch(`/api/estudiantes/${id_estudiante}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(estudiante)
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      $('#modalEditarEstudiante').modal('hide');
-      cargarEstudiantes(); // Recargar la lista de estudiantes
-      alert('Estudiante actualizado correctamente.');
-    } else {
-      alert('Error al actualizar estudiante: ' + data.message);
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('Error al actualizar estudiante: ' + error.message);
-  });
-});
-  function mostrarPagina(pagina) {
-    const inicio = (pagina - 1) * estudiantesPorPagina;
-    const fin = inicio + estudiantesPorPagina;
-    const estudiantesPagina = estudiantes.slice(inicio, fin);
-
-    const tbody = document.getElementById('tablaEstudiantes');
-    tbody.innerHTML = '';
-
-    estudiantesPagina.forEach(estudiante => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${estudiante.id_estudiante}</td>
-        <td>${estudiante.nombre}</td>
-        <td>${estudiante.email}</td>
-        <td>${formatearFecha(estudiante.fecha_nacimiento)}</td>
-        <td>${estudiante.direccion}</td>
-        <td>${estudiante.telefono}</td>
-        <td>${estudiante.nombre_grado}</td>
-        <td>${estudiante.nombre_seccion}</td>
-        <td>${estudiante.anio_escolar}</td>
-        <td>
-          <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEditarEstudiante">Editar</button>
-          <button type="button" data-view-ficha data-id="${estudiante.id_estudiante}" class="btn btn-info btn-sm">Ver Ficha Completa</button>
-          <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function crearBotonesDePaginacion() {
-    const totalPaginas = Math.ceil(estudiantes.length / estudiantesPorPagina);
-    const paginacionDiv = document.getElementById('pagination');
-    paginacionDiv.innerHTML = '';
-  
-    // Botón Anterior
-    const anteriorBtn = document.createElement('button');
-    anteriorBtn.textContent = 'Anterior';
-    anteriorBtn.classList.add('page-link');
-    if (paginaActual === 1) {
-      anteriorBtn.classList.add('disabled');
-      anteriorBtn.setAttribute('disabled', true);
-    }
-    anteriorBtn.addEventListener('click', () => {
-      if (paginaActual > 1) {
-        paginaActual--;
-        mostrarPagina(paginaActual);
-        crearBotonesDePaginacion();
-      }
-    });
-    paginacionDiv.appendChild(anteriorBtn);
-  
-    // Botones numéricos
-    for (let i = 1; i <= totalPaginas; i++) {
-      const boton = document.createElement('button');
-      boton.textContent = i;
-      boton.classList.add('page-link');
-      if (i === paginaActual) {
-        boton.classList.add('active');
-      }
-      boton.addEventListener('click', () => {
-        paginaActual = i;
-        mostrarPagina(i);
-        crearBotonesDePaginacion();
-      });
-      paginacionDiv.appendChild(boton);
-    }
-  
-    // Botón Siguiente
-    const siguienteBtn = document.createElement('button');
-    siguienteBtn.textContent = 'Siguiente';
-    siguienteBtn.classList.add('page-link');
-    if (paginaActual === totalPaginas) {
-      siguienteBtn.classList.add('disabled');
-      siguienteBtn.setAttribute('disabled', true);
-    }
-    siguienteBtn.addEventListener('click', () => {
-      if (paginaActual < totalPaginas) {
-        paginaActual++;
-        mostrarPagina(paginaActual);
-        crearBotonesDePaginacion();
-      }
-    });
-    paginacionDiv.appendChild(siguienteBtn);
-  }
-  async function cargarGrados() {
-    try {
-      const response = await fetch('/api/grados');
-      if (!response.ok) throw new Error('Error al cargar grados');
-      const grados = await response.json();
-  
-      const gradoSelects = [document.getElementById('grado'), document.getElementById('grado_edit')];
-      gradoSelects.forEach(select => {
-        select.innerHTML = '<option value="">Seleccione un grado</option>'; // Limpiar opciones
-        grados.forEach(grado => {
-          const option = document.createElement('option');
-          option.value = grado.id_grado;
-          option.textContent = grado.nombre_grado;
-          select.appendChild(option);
-        });
-      });
-    } catch (error) {
-      console.error('Error al cargar grados:', error);
-    }
-  }
-  
-  async function cargarSecciones(gradoId, isEditForm = false) {
-    try {
-      const response = await fetch(`/api/secciones?grado=${gradoId}`);
-      if (!response.ok) throw new Error('Error al cargar secciones');
-  
-      const secciones = await response.json();
-      console.log('Secciones cargadas:', secciones);
-  
-      const seccionSelect = isEditForm ? document.getElementById('seccion_edit_modal') : document.getElementById('seccion_modal');
-      seccionSelect.innerHTML = '<option value="">Seleccione una sección</option>'; // Limpiar opciones
-      secciones.forEach(seccion => {
-        const option = document.createElement('option');
-        option.value = seccion.id_seccion;
-        option.textContent = seccion.nombre_seccion;
-        seccionSelect.appendChild(option);
-      });
-    } catch (error) {
-      console.error('Error al cargar secciones:', error);
-    }
-  }
-  async function actualizarEstudiante(id, datos) {
-    try {
-      const response = await fetch(`/api/estudiantes/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(datos)
-      });
-  
-      const texto = await response.text(); // Captura la respuesta como texto
-      console.log('Respuesta del servidor:', texto); // Imprime la respuesta para depuración
-  
-      try {
-        const json = JSON.parse(texto); // Intenta parsear la respuesta como JSON
-        if (json.success) {
-          console.log('Estudiante actualizado correctamente:', json.message);
-        } else {
-          console.error('Error al actualizar estudiante:', json.message);
-        }
-      } catch (e) {
-        console.error('Error al parsear JSON:', e);
-      }
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-    }
-  }
-  
-  
-  
-  // Cargar grados y secciones al iniciar
-  cargarGrados();
-  cargarSecciones();
-
-  document.getElementById('grado_edit').addEventListener('change', (event) => {
-    const gradoId = event.target.value;
-    if (gradoId) {
-      cargarSecciones(gradoId, true); // Usamos `true` para indicar que es en el formulario de edición
-    } else {
-      document.getElementById('seccion_edit_modal').innerHTML = '<option value="">Seleccione una sección</option>';
-    }
-  });
     
-      function formatearFecha(fechaISO) {
-        const fecha = new Date(fechaISO);
-        const dia = fecha.getDate().toString().padStart(2, '0');
-        const mesesAbreviados = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-        const mes = mesesAbreviados[fecha.getMonth()];
-        const anio = fecha.getFullYear();
-        return `${dia} ${mes} ${anio}`;
-      }
-      // Cargar datos iniciales
-      cargarEstudiantes();
-      cargarGrados();
-    
-      // Añadir el evento para cargar secciones al cambiar el grado
-      // Añadir el evento para cargar secciones al cambiar el grado
-document.getElementById('grado').addEventListener('change', (event) => {
-  const gradoId = event.target.value;
-  if (gradoId) {
-    cargarSecciones(gradoId);
-  } else {
-    document.getElementById('seccion_modal').innerHTML = '<option value="">Seleccione una sección</option>';
-  }
-});
+    <div class="container mt-5">
+        <h1>Lista de Alumnos</h1>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAlumno"><i class="fas fa-user-plus"></i> Agregar Alumno</button>
 
-      // Event listener para el formulario de agregar estudiante
-      document.getElementById('formAgregarEstudiante').addEventListener('submit', async (event) => {
-        event.preventDefault(); // Previene el envío por defecto del formulario
-      
-        const formData = new FormData(event.target);
-        const data = {};
-        // Solo incluimos los datos que queremos enviar al servidor
-        const camposRelevantes = ['nombre', 'email', 'fecha_nacimiento', 'direccion', 'telefono', 'grado', 'seccion_modal', 'anio_escolar'];
-        formData.forEach((value, key) => {
-          if (camposRelevantes.includes(key)) {
-            data[key] = value;
-          }
-        });
+        <button id="generateReportPrimaria">Generar Reporte Primaria</button>
+<button id="generateReportBasico">Generar Reporte Básico</button>
+<button id="generateReportDiversificado">Generar Reporte Diversificado</button>
+
+
+        <table class="table mt-3" id="tablaAlumnos">
+
+            <div class="filter-container">
+                <input type="text" id="nameFilter" class="form-control filter-input" placeholder="Nombre">
+                <input type="text" id="surnameFilter" class="form-control filter-input" placeholder="Apellido">
+                <input type="text" id="gradoFilter" class="form-control filter-input" placeholder="Grado">
+                <input type="text" id="seccionFilter" class="form-control filter-input" placeholder="Sección">
+                <select id="statusFilter" class="form-control filter-input">
+                    <option value="">Estado</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+                <button id="filterButton" class="btn btn-filter filter-button">Filtrar</button>
+            </div>
+            
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Grado</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Sección</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí se llenarán los alumnos dinámicamente -->
+            </tbody>
+        </table>
+        <!-- Paginación -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-end" id="pagination">
+                <!-- Los botones de paginación se cargarán aquí -->
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Modal para Agregar/Editar Alumno -->
+    <div class="modal fade" id="modalAlumno" tabindex="-1" role="dialog" aria-labelledby="modalAlumnoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAlumnoLabel">Agregar Alumno</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formAlumno">
+                        <input type="hidden" id="id_alumno" name="id_alumno">
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellido">Apellido</label>
+                            <input type="text" class="form-control" id="apellido" name="apellido" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="grado">Grado</label>
+                            <select class="form-control" id="grado" name="grado" required>
+                                <option value="">Seleccione un grado</option>
+                                <!-- Aquí se cargarán los grados dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono</label>
+                            <input type="text" class="form-control" id="telefono" name="telefono" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="seccion">Sección:</label>
+                            <select class="form-control" id="seccion" name="seccion" required>
+                                <option value="">Seleccione una sección</option>
+                                <!-- Aquí se cargarán las secciones dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="estado">Estado:</label>
+                            <select class="form-control" id="estado" name="estado" required>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button id="guardarAlumno" type="button">Guardar Alumno</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEliminarLabel">Eliminar Alumno</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este alumno?
+                    <input type="hidden" id="eliminarAlumnoId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmarEliminar">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <script>
+    async function fetchUsersAndGenerateReportByLevel(level) {
         try {
-          const response = await fetch('/estudiantes', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          });
-      
-          if (!response.ok) {
-            throw new Error('Error al guardar el estudiante');
-          }
-          const result = await response.json();
-          console.log('Éxito:', result);
-      
-          // Mostrar mensaje de éxito
-          showMessage('success', 'Estudiante agregado correctamente.');
-      
-          // Cierra el modal
-          $('#modalAgregarEstudiante').modal('hide');
-      
-          // Actualiza la lista de estudiantes
-          await cargarEstudiantes(); // Espera a que la lista se actualice
+            const response = await fetch('/api/alumnos');
+            const users = await response.json();
+    
+            // Filtrar los usuarios según el nivel académico
+            const filteredUsers = users.filter(user => {
+                const nombreGrado = getGradeName(user.grado);
+                if (level === 'Primaria' && nombreGrado.includes('Primaria')) return true;
+                if (level === 'Básico' && nombreGrado.includes('Básico')) return true;
+                if (level === 'Diversificado' && nombreGrado.includes('Bachillerato')) return true;
+                return false;
+            });
+    
+            generatePdf(filteredUsers, level);
         } catch (error) {
-          console.error('Error:', error);
-          
-          // Mostrar mensaje de error
-          showMessage('danger', 'Hubo un error al agregar el estudiante.');
+            console.error('Error al obtener datos de la API:', error);
         }
-      });
-      
-      // Manejo de botones para abrir el modal
-  document.querySelectorAll('[data-open-modal]').forEach(button => {
-    button.addEventListener('click', function() {
-      const idEstudiante = this.getAttribute('data-id');
-      abrirModalEditar(idEstudiante);
+    }
+    
+    // Mapeo de números a nombres de grados
+    function getGradeName(gradeNumber) {
+        const gradeMap = {
+            6: 'Segundo Primaria',
+            12: 'Sexto Primaria',
+            15: 'Tercero Básico',
+            21: 'Bachillerato en Computación',
+            22: 'Bachillerato en Medicina',
+            26: 'Bachillerato en Turismo'
+            // Agrega aquí todos los grados necesarios
+        };
+        return gradeMap[gradeNumber] || 'Grado Desconocido';
+    }
+    
+    // Mapeo de números a nombres de secciones
+    function getSectionName(sectionNumber) {
+        const sectionMap = {
+            181: 'A',
+            182: 'B',
+            190: 'A',
+            191: 'B',
+            193: 'C'
+            // Agrega aquí todas las secciones necesarias
+        };
+        return sectionMap[sectionNumber] || 'Sección Desconocida';
+    }
+    
+    function generatePdf(users, level) {
+        const { jsPDF } = window.jspdf;
+    
+        if (!users || users.length === 0) {
+            alert(`No se encontraron alumnos en el nivel ${level}.`);
+            return;
+        }
+    
+        // Crear un nuevo PDF en orientación horizontal
+        const pdf = new jsPDF('landscape');
+        
+        // Encabezado estilizado con letra más grande y en negrita
+        pdf.setFont('times', 'bold');
+        pdf.setFontSize(18);
+        const title = `Reporte de Alumnos - Nivel ${level}`;
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const titleWidth = pdf.getTextWidth(title);
+        pdf.text(title, (pageWidth - titleWidth) / 2, 20);
+    
+        // Agregar fecha y hora de generación
+        const now = new Date();
+        const fechaGeneracion = now.toLocaleDateString();
+        const horaGeneracion = now.toLocaleTimeString();
+        pdf.setFontSize(12);
+        pdf.text(`Fecha: ${fechaGeneracion} - Hora: ${horaGeneracion}`, 20, 30);
+    
+        const headers = ['ID', 'Nombre', 'Apellido', 'Grado', 'Fecha de Nacimiento', 'Email', 'Teléfono', 'Sección', 'Estado'];
+        const startY = 50;
+        let yPosition = startY;
+    
+        const columnWidths = [10, 40, 30, 50, 40, 35, 25, 20, 20]; // Anchos ajustados
+    
+        // Aplicar un fondo de color y cambiar el estilo de los encabezados de la tabla
+        pdf.setFillColor(200, 200, 200); // Fondo de color azul claro
+        pdf.setTextColor(0, 0, 0); // Asegurar que el texto de los encabezados sea negro
+        pdf.setFont('times');
+        pdf.setFontSize(12);
+    
+        // Dibujar encabezados de la tabla
+        // Dibujar encabezados de la tabla
+        headers.forEach((header, index) => {
+            const xPosition = 10 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
+            
+            // Dibuja el rectángulo de fondo para el encabezado
+            pdf.setFillColor(200, 200, 255); // Color de fondo
+            pdf.rect(xPosition, yPosition - 5, columnWidths[index], 10, 'F'); // Fondo de encabezado
+        
+            // Dibuja el texto del encabezado
+            pdf.setTextColor(0, 0, 0); // Color del texto
+            pdf.text(header, xPosition + 2, yPosition); // Dibuja el texto del encabezado
+        });
+
+    yPosition += 15; // Aumentar el espacio después de los encabezados
+    
+        // Cambiar el estilo del contenido de las filas
+        pdf.setFont('times', 'normal');
+        pdf.setFontSize(10);
+    
+        // Asegurar que el texto de las filas sea visible en negro
+        pdf.setTextColor(0, 0, 0);
+    
+        users.forEach(user => {
+            const row = [
+                user.id_alumno,
+                user.nombre,
+                user.apellido,
+                getGradeName(user.grado), // Convertir número de grado a nombre
+                user.fecha_nacimiento.split('T')[0], // Formato de fecha
+                user.email,
+                user.telefono,
+                getSectionName(user.seccion), // Convertir número de sección a nombre
+                user.estado
+            ];
+    
+            row.forEach((cell, index) => {
+                const cellXPosition = 10 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0) + 2;
+                pdf.text(cell.toString(), cellXPosition, yPosition); // Dibuja el texto de la fila
+            });
+            
+            yPosition += 10; // Aumentar la posición para la siguiente fila
+        });
+    
+        // Pie de página con fuente más pequeña
+        const footerText = 'Generado por el sistema de gestión escolar';
+        pdf.setFontSize(10);
+        pdf.text(footerText, 10, pdf.internal.pageSize.height - 10);
+    
+        // Guardar el archivo PDF
+        pdf.save(`reporte_alumnos_${level}.pdf`);
+    }
+    
+    // Eventos de clic para generar reportes por nivel
+    document.getElementById('generateReportPrimaria').addEventListener('click', () => fetchUsersAndGenerateReportByLevel('Primaria'));
+    document.getElementById('generateReportBasico').addEventListener('click', () => fetchUsersAndGenerateReportByLevel('Básico'));
+    document.getElementById('generateReportDiversificado').addEventListener('click', () => fetchUsersAndGenerateReportByLevel('Diversificado'));
+    
+
+        let alumnos = []; // Array para almacenar los alumnos
+        let grados = []; // Array para almacenar los grados
+        let secciones = []; // Array para almacenar las secciones
+        let paginaActual = 1;
+        const elementosPorPagina = 10; // Número de alumnos por página
+    
+        // Cargar grados desde la base de datos
+        function cargarGrados() {
+            $.get('/grados', function(data) {
+                grados = data;
+                const gradoSelect = $('#grado');
+                grados.forEach(grado => {
+                    gradoSelect.append(`<option value="${grado.id_grado}">${grado.nombre_grado}</option>`);
+                });
+            }).fail(function() {
+                console.error('Error al cargar los grados');
+            });
+        }
+    
+        // Cargar alumnos desde la base de datos
+        function cargarAlumnos() {
+            $.get('/api/alumnos', function(data) { // Cambia aquí la ruta si es necesario
+                console.log(data); // Verifica el contenido
+                alumnos = data; // Asegúrate de que data sea un arreglo
+                llenarTabla(); // Llama a la función para llenar la tabla
+            }).fail(function() {
+                console.error('Error al cargar los alumnos');
+            });
+        }
+    
+        // Función para obtener el nombre del grado
+        function obtenerNombreGrado(idGrado) {
+            const grado = grados.find(g => g.id_grado == idGrado);
+            return grado ? grado.nombre_grado : 'Desconocido';
+        }
+    
+        // Función para obtener el nombre de la sección
+        function obtenerNombreSeccion(idSeccion) {
+            const seccion = secciones.find(s => s.id_seccion == idSeccion);
+            return seccion ? seccion.nombre_seccion : 'Desconocido';
+        }
+    
+        // Función para llenar la tabla
+        function llenarTabla() {
+            const tbody = $('#tablaAlumnos tbody');
+            tbody.empty(); // Limpia el contenido anterior
+    
+            const inicio = (paginaActual - 1) * elementosPorPagina;
+            const fin = inicio + elementosPorPagina;
+            const alumnosPaginados = alumnos.slice(inicio, fin);
+    
+            alumnosPaginados.forEach(alumno => { // Cambiado de alumnos a alumnosPaginados
+                tbody.append(`
+                    <tr>
+                        <td>${alumno.id_alumno}</td>
+                        <td>${alumno.nombre}</td>
+                        <td>${alumno.apellido}</td>
+                        <td>${obtenerNombreGrado(alumno.grado)}</td>
+                        <td>${new Date(alumno.fecha_nacimiento).toLocaleDateString()}</td>
+                        <td>${alumno.email}</td>
+                        <td>${alumno.telefono}</td>
+                        <td>${obtenerNombreSeccion(alumno.seccion)}</td>
+                        <td>${alumno.estado}</td>
+                        <td>
+                            <button class="btn btn-warning" onclick="editarAlumno(${alumno.id_alumno})"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger" onclick="confirmarEliminacion(${alumno.id_alumno})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+    
+        // Función para actualizar la paginación
+        function actualizarPaginacion() {
+            const totalPaginas = Math.ceil(alumnos.length / elementosPorPagina);
+            const pagination = $('#pagination');
+            pagination.empty();
+    
+            for (let i = 1; i <= totalPaginas; i++) {
+                pagination.append(`
+                    <li class="page-item ${i === paginaActual ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="irAPagina(${i})">${i}</a>
+                    </li>
+                `);
+            }
+        }
+    
+        // Función para cambiar de página
+        function irAPagina(pagina) {
+            paginaActual = pagina;
+            llenarTabla();
+            actualizarPaginacion();
+        }
+    
+        // Cargar secciones desde la base de datos
+        function cargarSecciones() {
+            $.get('/secciones', function(data) {
+                secciones = data;
+                const seccionSelect = $('#seccion');
+                secciones.forEach(seccion => {
+                    seccionSelect.append(`<option value="${seccion.id_seccion}">${seccion.nombre_seccion}</option>`);
+                });
+            }).fail(function() {
+                console.error('Error al cargar las secciones');
+            });
+        }
+    
+        // Guardar o actualizar alumno
+        $('#guardarAlumno').click(() => {
+            const id = $('#id_alumno').val();
+            const nuevoAlumno = {
+                nombre: $('#nombre').val(),
+                apellido: $('#apellido').val(),
+                grado: $('#grado').val(),
+                fecha_nacimiento: $('#fecha_nacimiento').val(),
+                email: $('#email').val(),
+                telefono: $('#telefono').val(),
+                seccion: $('#seccion').val(), // Asegúrate de que este campo esté incluido
+                estado: $('#estado').val() // Asegúrate de que este campo esté incluido
+            };
+    
+            // Validar que todos los campos estén llenos
+            if (!nuevoAlumno.nombre || !nuevoAlumno.apellido || !nuevoAlumno.grado || !nuevoAlumno.fecha_nacimiento || !nuevoAlumno.email || !nuevoAlumno.telefono || !nuevoAlumno.seccion || !nuevoAlumno.estado) {
+                alert('Por favor, completa todos los campos.');
+                return;
+            }
+    
+            // Enviar la solicitud al servidor
+            if (id) {
+                // Actualizar
+                $.ajax({
+                    url: `/alumnos/${id}`,
+                    type: 'PUT',
+                    data: nuevoAlumno,
+                    success: (response) => {
+                        console.log(response.message); // Mensaje de éxito
+                        cargarAlumnos(); // Recargar alumnos
+                        $('#modalAlumno').modal('hide');
+                        $('#formAlumno')[0].reset();
+                    },
+                    error: (err) => {
+                        console.error('Error al actualizar el alumno:', err);
+                        alert('Error al actualizar el alumno.');
+                    }
+                });
+            } else {
+                // Agregar nuevo alumno (en caso de que no haya id)
+                $.post('/alumnos', nuevoAlumno)
+                    .done(() => {
+                        cargarAlumnos(); // Recargar alumnos
+                        $('#modalAlumno').modal('hide');
+                        $('#formAlumno')[0].reset();
+                    })
+                    .fail((err) => {
+                        console.error('Error al agregar el alumno:', err);
+                        alert('Error al agregar el alumno.');
+                    });
+            }
+        });
+    
+        // Editar alumno
+        function editarAlumno(id) {
+            const alumno = alumnos.find(a => a.id_alumno === id);
+            $('#id_alumno').val(alumno.id_alumno);
+            $('#nombre').val(alumno.nombre);
+            $('#apellido').val(alumno.apellido);
+            $('#grado').val(alumno.grado);
+            $('#fecha_nacimiento').val(alumno.fecha_nacimiento);
+            $('#email').val(alumno.email);
+            $('#telefono').val(alumno.telefono);
+            $('#seccion').val(alumno.seccion);
+            $('#estado').val(alumno.estado);
+            $('#modalAlumnoLabel').text('Editar Alumno');
+            $('#modalAlumno').modal('show');
+        }
+    
+        // Confirmar eliminación
+        function confirmarEliminacion(id) {
+            $('#eliminarAlumnoId').val(id);
+            $('#modalEliminar').modal('show');
+        }
+    
+        // Eliminar alumno
+        $('#confirmarEliminar').click(() => {
+            const id = $('#eliminarAlumnoId').val();
+            $.ajax({
+                url: `/api/alumnos/${id}`,
+                method: 'DELETE',
+                success: () => {
+                    $('#modalEliminar').modal('hide');
+                    cargarAlumnos();
+                },
+                error: (error) => {
+                    console.error('Error al eliminar el alumno', error);
+                }
+            });
+        });
+    
+        // Inicializar la aplicación
+        $(document).ready(() => {
+            cargarGrados();
+            cargarSecciones(); // Carga las secciones
+            cargarAlumnos();
+        });
+// Función para filtrar alumnos en tiempo real
+function filtrarAlumnos() {
+    const nameValue = $('#nameFilter').val().toLowerCase();
+    const surnameValue = $('#surnameFilter').val().toLowerCase();
+    const gradoValue = $('#gradoFilter').val().toLowerCase();
+    const seccionValue = $('#seccionFilter').val().toLowerCase();
+    const statusValue = $('#statusFilter').val();
+
+    // Si todos los filtros están vacíos, recargar todos los alumnos
+    if (!nameValue && !surnameValue && !gradoValue && !seccionValue && !statusValue) {
+        cargarAlumnos(); // Llama a la función que recarga todos los alumnos
+        return;
+    }
+
+    const filteredAlumnos = alumnos.filter(alumno => {
+        const nombre = alumno.nombre.toLowerCase();
+        const apellido = alumno.apellido.toLowerCase();
+        const grado = obtenerNombreGrado(alumno.grado).toLowerCase();
+        const seccion = obtenerNombreSeccion(alumno.seccion).toLowerCase();
+        const estado = alumno.estado.toLowerCase();
+
+        return (
+            (nameValue === '' || nombre.includes(nameValue)) &&
+            (surnameValue === '' || apellido.includes(surnameValue)) &&
+            (gradoValue === '' || grado.includes(gradoValue)) &&
+            (seccionValue === '' || seccion.includes(seccionValue)) &&
+            (statusValue === '' || estado === statusValue)
+        );
     });
-  });
+
+    alumnos = filteredAlumnos; // Actualiza el array de alumnos con los filtrados
+    paginaActual = 1; // Reinicia a la primera página
+    llenarTabla(); // Vuelve a llenar la tabla con los resultados filtrados
+    actualizarPaginacion(); // Actualiza la paginación
+}
+
+// Evento para filtrar en tiempo real
+$('.filter-input').on('input change', () => {
+    filtrarAlumnos();
 });
-  </script>
+
+    </script>
 </body>
 </html>
