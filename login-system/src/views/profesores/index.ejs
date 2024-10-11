@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Administrador</title>
-    <!-- Enlace a Google Fonts para la tipografía Margarine -->
-    <link href="https://fonts.googleapis.com/css2?family=Margarine:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Enlace a Font Awesome para íconos -->
+    <title>Módulo de Profesores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&display=swap" rel="stylesheet">
     <style>
+        .pagination {
+            margin-top: 3px;
+            justify-content: center; /* Centrar la paginación */
+        }
+        /* Estilos de los mensajes emergentes */
+        #messageBox {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            width: 300px;
+        }
         body {
             margin: 0;
             font-family: 'Margarine', sans-serif;
@@ -16,205 +28,249 @@
             min-height: 100vh;
             background-color: #f7f7f7;
         }
-        .sidebar {
-            width: 250px;
-            background-color: #2a2d34;
-            color: #fff;
-            position: fixed;
-            height: 100%;
-            top: 0;
-            left: 0;
+        .button-group {
             display: flex;
-            flex-direction: column;
-            transition: left 0.3s ease;
-            overflow: auto;
+            gap: 5px; /* Reduce el espacio entre los botones */
         }
+        
+        .button-group .btn {
+            margin: 0; /* Asegúrate de que no haya márgenes adicionales */
+            padding: 10px 10px; /* Ajusta el padding para que los botones sean más pequeños si es necesario */
+        }
+        
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+        /* Botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 5px;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* contenedores de filtro */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-top: -3px;
+            margin-left: 280px;
+        }
+        
+        .filters input[type="text"],
+        .filters select {
+            max-width: 200px;
+            padding: 8px 12px; /* Espaciado interno */
+            font-weight: normal; /* Normalizar el peso del texto */
+            color: #333; /* Texto negro oscuro */
+            background-color: #fff; /* Fondo blanco */
+            border: 1px solid #ccc; /* Borde gris */
+            border-radius: 4px; /* Bordes redondeados */
+        }
+        
+        .filters input[type="text"]::placeholder {
+            color: #666; /* Color del placeholder */
+        }
+        
+        .filters select {
+            padding-left: 10px; /* Espacio a la izquierda para el select */
+        }
+        
+        /* Tabla */
+        .table {
+            width: 80%; /* Ajusta según sea necesario */
+            max-width: 800px;
+            margin: 20px auto;
+            border-collapse: collapse; /* Mantiene las celdas juntas */
+            margin-left: 280px;
+            table-layout: auto; /* Permite que las columnas se ajusten automáticamente */
+        }
+        
+        .table th, .table td {
+            padding: 11px;
+            text-align: left;
+            border: none; /* Elimina bordes en las celdas */
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .table tbody tr:nth-child(even) {
+            background-color: #f2f2f2; /* Alterna el color de fondo */
+        }
+        
+        .table thead th {
+            background-color: #359b16;
+            color: white; /* Color del texto en el encabezado */
+        }
+        
+        /* Para asegurar que la columna de grados se ajuste correctamente */
+        .table td:nth-child(6) { /* Columna de Grados */
+            white-space: normal; /* Permite que el texto se divida en líneas */
+        }
+        
+        
+        /* Estilo para el botón de Crear Usuario */
+        /* Botón */
+        /* Botón */
+        .btn-custom {
+            font-size: 16px;
+            padding: 8px 15px;
+            margin-left: 0; /* Asegura que el botón esté alineado al título */
+            margin-bottom: 10px; /* Reduce el espacio entre el botón y el filtro */
+            display: inline-block; /* Para que respete el ancho de su contenido */
+        }
+        
+        /* Modales */
+        .modal-header {
+        background-color: #007bff;
+        color: white;
+        }
+        
+        .modal-header .btn-close {
+        color: white;
+        }
+        
+        /* Botones dentro de los modales */
+        .modal .btn {
+        margin-top: 10px;
+        }
+        
+        /* Contenido del dashboard */
+        .dashboard-container {
+        display: flex;
+        flex-direction: column;
+        }
+        
+        .sidebar {
+        width: 250px;
+        background-color: #2a2d34;
+        color: #fff;
+        position: fixed;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: flex;
+        flex-direction: column;
+        transition: left 0.3s ease;
+        overflow: auto;
+        }
+        
         .sidebar.active {
-            left: 0;
+        left: 0;
         }
+        
+        .nav-links li {
+        position: relative;
+        }
+        
         .nav-links {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .nav-links li {
-            position: relative;
-        }
+        
         .nav-links a {
             display: flex;
             align-items: center;
-            padding: 15px;
+            padding: 13.5px;
             color: #fff;
             text-decoration: none;
             position: relative;
         }
-        .nav-links a:hover {
-            background-color: #3e4149;
-        }
-        .dropdown-content {
-            display: none;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            background-color: #2a2d34;
-            position: relative;
-            left: 0;
-            width: 100%;
-        }
-        .dropdown-content li {
-            padding: 0;
-        }
-        .dropdown-content a {
-            padding: 10px 15px;
-            color: #fff;
-            text-decoration: none;
-            display: block;
-        }
-        .dropdown-content a:hover {
-            background-color: #3e4149;
-        }
-        .show {
-            display: block;
-        }
-        .header {
-            background-color: #4b6584;
-            color: #fff;
-            padding: 10px;
-            position: fixed;
-            top: 0;
-            left: 250px;
-            width: calc(100% - 250px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-        }
-        .header-logo img {
-            height: 80px;
-            margin-right: 15px;
-        }
-        .header h1 {
-            font-weight: 600;
-            font-size: 1.8em;
-        }
-        .profile-header {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        .profile-header img {
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-        }
-        .profile-header .profile-info {
-            margin-right: 30px;
-            color: #fff;
-        }
-        .profile-header .profile-info .name {
-            font-size: 1em;
-        }
-        .profile-header .profile-info .role {
-            font-size: 0.8em;
-            color: #cfcfcf;
-        }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(104, 19, 19, 0.1);
-            z-index: 1001;
-            overflow: hidden;
-        }
-        .dropdown-menu a {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            color: #333;
-            text-decoration: none;
-        }
-        .dropdown-menu a i {
-            margin-right: 10px;
-        }
-        .dropdown-menu a:hover {
-            background-color: #f7f7f7;
-        }
-        .profile-header:hover .dropdown-menu {
-            display: block;
-        }
+        
         /* Animación de movimiento para cada opción del menú al pasar el mouse */
         .nav-links a:hover {
             background-color: #3e4149;
             transform: translateY(-5px); /* Mueve la opción hacia arriba */
         }
+        
         /* Animación de retorno a la posición original */
         .nav-links a {
             transition: transform 0.3s ease;
         }
+        
         .nav-links a:hover {
             background-color: #3e4149; /* Cambia el color de fondo al pasar el mouse */
         }
-        .dashboard-container {
+        
+        .header {
+            background: -webkit-linear-gradient(38deg, #39bb25, #f4f816); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(38deg, #39bb25, #f4f816); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            color: #030303;
+            padding: 12px;
+            position: fixed;
+            top: 0;
+            left: 250px;
+            width: calc(100% - 250px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Centra el contenido */
+            z-index: 1000;
+        }
+        
+        .header-logo img {
+            height: 80px;
+            margin-right: 15px;
+        }
+        
+        .header h1 {
+            font-weight: 600;
+            font-size: 1.8em;
+        }
+        
+        .content {
             margin-left: 250px;
             margin-top: 60px;
             padding: 20px;
-            width: calc(100% - 250px);
         }
-        .modules-container {
+        
+        .button-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
+            align-items: center; /* Alinear botones verticalmente */
+            gap: 10px; /* Espacio entre botones */
         }
-        .module {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            color: #333;
-            text-align: center;
-            padding: 20px;
-            width: calc(25% - 20px);
-            transition: transform 0.3s;
+        
+        .button-container {
+            display: flex;
+            justify-content: flex-end; /* Alinea los botones a la derecha */
+            margin-top: 20px; /* Espacio entre el título y los botones */
+            margin-right: 290px; /* Espacio a la derecha para mover los botones */
         }
-        .module:hover {
-            transform: translateY(-5px);
+        
+        .button-container .btn {
+            margin-left: 10px; /* Espacio entre los botones */
         }
-        .module h3 {
-            margin: 10px 0;
-            font-size: 1.2em;
-            font-weight: 600;
+        /* Título */
+        /* Título */
+        .module-title {
+            font-weight: 800;
+            font-size: 1.8em;
+            margin-bottom: 5px; /* Reduce el espacio entre el título y el botón */
+            margin-left: 0; /* Asegura que el título no tenga desplazamiento */
         }
-        .footer {
-            background-color: #4b6584;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: calc(100% - 250px);
-            margin-left: 250px;
+
+        .nav-category {
+            margin-bottom: 10px; /* Espacio entre categorías */
+            margin-top: 10px;
         }
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 200px;
-            }
-            .sidebar.active {
-                left: 0;
-            }
-            .header, .footer {
-                left: 200px;
-                width: calc(100% - 200px);
-            }
-            .dashboard-container {
-                margin-left: 200px;
-                width: calc(100% - 200px);
-            }
+        
+        .nav-category h3 {
+            font-size: 1em; /* Tamaño del texto del título */
+            color: #05f505; /* Color del título */
+            margin-bottom: 7px; /* Espacio debajo del título */
         }
-        .toggle-sidebar-btn {
+        /* Fondo transparente que cubre toda la página */
+        .loading-overlay {
             position: fixed;
             top: 20px;
             left: 20px;
@@ -226,6 +282,34 @@
             cursor: pointer;
             z-index: 1001;
         }
+        
+        /* Estilos adicionales para el submenú */
+        .submenu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: none;
+            background-color: #2a2d34;
+        }
+        .submenu li {
+            padding: 0;
+        }
+        .submenu a {
+            padding: 10px 15px;
+            color: #fff;
+            text-decoration: none;
+            display: block;
+        }
+        .submenu a:hover {
+            background-color: #3e4149;
+        }
+        .submenu.show {
+            display: block;
+        }
+        .dropdown-arrow {
+            float: right;
+            margin-left: auto;
+        }
     </style>
 </head>
 <body>
@@ -234,7 +318,7 @@
             <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li><a href="/usuarios"><i class="fas fa-users"></i> Usuarios</a></li>
             <li><a href="/grados"><i class="fas fa-graduation-cap"></i> Grados</a></li>
-            <li><a href="/alumnos"><i class="fas fa-user-graduate"></i> Alumnos</a></li>            
+            <li><a href="/alumnos"><i class="fas fa-user-graduate"></i> Alumnos</a></li>
             <li><a href="/profesores"><i class="fas fa-chalkboard-teacher"></i> Profesores</a></li>
             <li><a href="/reportes"><i class="fas fa-chart-bar"></i> Reportes</a></li>
             <li><a href="/asistencia"><i class="fas fa-user-check"></i> Asistencia</a></li>
@@ -251,47 +335,10 @@
             <img src="/img/home.jpg" alt="Logo">
         </div>
         <h1>CENTRO ESCOLAR CECEC</h1>
-        <div class="profile-header">
-            <img src="<%= user.profilePicture %>" alt="Foto de Perfil" class="profile-picture">
-            <div class="profile-info">
-                <div class="name"><%= user.nombre_usuario %></div>
-                <div class="role"><%= user.rol %></div>
-            </div>
-            <!-- Menú desplegable dentro de profile-header -->
-            <div class="dropdown-menu">
-                <a href="#"><i class="fas fa-user"></i> Perfil</a>
-                <a href="#"><i class="fas fa-cogs"></i> Configuración</a>
-                <a href="#"><i class="fas fa-sign-out-alt"></i> Salir</a>
-            </div>
-        </div>
     </header>
-    
-    <div class="dashboard-container">
-        <div class="modules-container">
-            <div id="history-content" style="margin-top: 10px; text-align: center;">
-                <h2 style="font-size: 2em; font-weight: 600;">Nuestra Historia</h2>
-                <div style="max-width: 800px; margin: 0 auto; text-align: justify; font-size: 1.1em; line-height: 1.8;">
-                    <p>
-                        La Escuela de Cristo se estableció hace diez años con la intención de brindar a los niños y jóvenes de la comunidad de Villa Nueva, Guatemala, una educación completa y de alta calidad. La necesidad de una institución educativa que combinara la excelencia académica con un enfoque en el desarrollo integral de los estudiantes fue lo que llevó a la fundación de la escuela.
-                    </p>
-                    <p>
-                        La Escuela de Cristo comenzó con el objetivo de establecer una base sólida, desarrollando un currículo académico que incluía tanto materias básicas como programas adicionales de formación en valores y habilidades sociales. La institución se destacó por su enfoque en la educación individualizada y el apoyo constante a todos los estudiantes.
-                    </p>
-                    <p>
-                        La escuela ha experimentado un crecimiento significativo tanto en el número de estudiantes como en la calidad de las instalaciones. Las instalaciones se ampliaron para incluir una cancha deportiva para aumentar la actividad física y el espíritu deportivo. Además, se inauguró una cafetería para ofrecer un servicio de alimentación que apoya el bienestar general de la comunidad escolar y fomenta una dieta saludable.
-                    </p>
-                    <p>
-                        A pesar de estos avances, la gestión administrativa de la escuela, en particular la gestión de datos de los estudiantes y la generación de recibos, sigue siendo principalmente manual. Esto ha generado problemas en términos de eficiencia y precisión, lo que ha llevado a la adopción de un sistema digital para modernizar estos procesos.
-                    </p>
-                    <p>
-                        El objetivo del proyecto de implementación del nuevo sistema de gestión de datos es resolver estos problemas, mejorar la gestión de la información y aumentar la eficiencia operativa. La misión de la Escuela de Cristo de brindar una educación de alta calidad, adaptándola a las necesidades actuales y preparando a sus estudiantes para un futuro próspero sigue siendo un compromiso.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="footer">
-        © 2024 ING. Frida Berlinda Garcia
-    </div>
+    <script>
+        
+
+    </script>
 </body>
 </html>
